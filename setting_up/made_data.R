@@ -193,6 +193,29 @@ roads1200_projected <- roads1200_projected %>%
 
 roads1200_projected |> write_rds('data/roads1200_projected_2011.rds', compress = 'gz')
 
+# S1400: Minor roads for 2011
+counties <- counties(state = "TN", year = 2011)
+
+county_names <- counties$NAME
+county_fips <- counties$COUNTYFP
+
+load_minor_road <- function(county_fips) {
+  roads_data <- roads(state = "TN", county = county_fips, year = 2011)
+  
+  minor_roads <- roads_data |>
+    filter(MTFCC == "S1400")
+  
+  return(minor_roads)
+}
+
+roads1400 <- map(county_fips, load_minor_road) |>
+  bind_rows()
+
+roads1400 |> write_rds("minor_road_tn.rds", compress = "gz")
+roads1400_projected <- sf::st_transform(roads1400, crs = 5072) # change from crs 4326 to 5072
+
+roads1400_projected |> write_rds("roads1400_projected.rds", compress = "gz")
+
 # Traffic density ---------------------------------------------------------
 # Download and prepare AADT (Annual Average Daily Traffic) data
 # AADT measures the average number of vehicles per day on road segments
