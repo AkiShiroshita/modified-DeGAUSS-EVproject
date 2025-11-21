@@ -4,7 +4,8 @@
 .RData
 .Ruserdata
 *.Rproj.user
-*.Rproj
+# Keep .Rproj file for RStudio project settings
+# *.Rproj
 
 # renv
 renv/library/
