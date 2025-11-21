@@ -1,0 +1,15 @@
+##### Docker #####
+# Install Docker Desktop for Windows - x86_64 from here (https://docs.docker.com/desktop/setup/install/windows-install/)
+# Run the downloaded "Docker Desktop Installer.exe"
+
+# Open the Docker (just clicking on the Docker icon)
+
+##### Podman #####
+# Install podman-installer-windows-amd64.exe from here (https://github.com/containers/podman/blob/main/docs/tutorials/podman-for-windows.md)
+# run podman machine init on the Command Prompt
+
+##### R studio #####
+# Go to [Tools] > [Global Options] in the RStudio menu.
+# In the [General] tab, adjust the following settings:
+# "Save workspace to .RData on exit": Set this to "Never".
+# "Restore .RData into workspace at startup": Uncheck this option to prevent .RData from being loaded when you start RStudio.

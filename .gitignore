@@ -1,0 +1,76 @@
+# R
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+*.Rproj.user
+*.Rproj
+
+# renv
+renv/library/
+renv/staging/
+renv/python/
+
+# Data files (may contain sensitive information)
+data/
+*.csv
+*.xlsx
+*.xls
+*.fst
+*.rds
+*.gpkg
+*.tif
+*.shp
+*.shx
+*.dbf
+*.prj
+*.zip
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.log
+
+# Output files
+output/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OneDrive
+~$*
+
+# Sensitive information
+*.key
+*.pem
+*.env
+.env
+
+# Large files
+*.gz
+*.zip
+*.tar
+
