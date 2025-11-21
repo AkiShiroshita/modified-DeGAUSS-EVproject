@@ -19,6 +19,9 @@ GitHubでリポジトリを作成した後、以下のコマンドを実行し�
 ```powershell
 cd "C:\Users\shiroa1\OneDrive - VUMC\modified_degauss"
 
+# 既存のリモートがある場合は削除
+git remote remove origin
+
 # リモートリポジトリを追加（YOUR_USERNAMEを実際のGitHubユーザー名に置き換えてください）
 git remote add origin https://github.com/YOUR_USERNAME/modified-DeGAUSS-EVproject.git
 
@@ -31,6 +34,8 @@ git branch -M main
 # GitHubにプッシュ
 git push -u origin main
 ```
+
+**注意**: もし「remote origin already exists」というエラーが出た場合は、上記の `git remote remove origin` コマンドを実行してから、再度 `git remote add origin` を実行してください。
 
 ## 3. 認証
 
