@@ -6,6 +6,8 @@ This project provides a pipeline for environmental exposure assessment using mod
 
 It can process both child cohort and dyad (mother-child pair) cohort data.
 
+If  you require information regarding our motivation for this program, a list of environmental variables, or detailed explanations for practitioners, please visit [this website](https://akishiroshita.github.io/modified-DeGAUSS-instruction/).
+
 ## File Structure
 
 ### Main Scripts
@@ -132,7 +134,7 @@ Processed data is saved to `output_folder` with all PHI (Protected Health Inform
 
 This project is licensed under the MIT License.
 
-Copyright (c) [2025] [Akihiro Shiroshita]
+Copyright (c) [2025] [Aki Shiroshita]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
