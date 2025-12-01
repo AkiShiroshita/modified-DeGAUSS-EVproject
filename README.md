@@ -38,7 +38,7 @@ Each pipeline consists of the following steps:
    - Calculates distance to nearest roads
 
 6. **Greenspace** (`R/green.R`)
-   - Calculates greenspace exposure metrics (e.g., NDVI, park proximity)
+   - Calculates greenspace exposure metrics 
 
 7. **Deprivation Index** (`R/dep_index.R`)
    - Assigns area-level deprivation/socioeconomic status indices
