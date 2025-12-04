@@ -40,6 +40,19 @@ pacman::p_load(
   "qs",
   "tictoc")
 
+# Create folders ----------------------------------------------------------
+
+folders <- c(input_folder, output_folder, temp_folder)
+
+for (f in folders) {
+  if (!dir.exists(f)) {
+    dir.create(f, recursive = TRUE)
+    message("Created folder: ", f)
+  } else {
+    message("Folder already exists: ", f)
+  }
+}
+
 # Log ---------------------------------------------------------------------
 # Set up timing logs using tictoc package
 # Logs track processing time for each pipeline step

@@ -52,11 +52,6 @@ d[, `:=`(
   exposure_start_date = TN_DOB,
   exposure_end_date = TN_DOB %m+% years(1) - days(1)
 )]
-# Alternative: 4-year exposure period (commented out)
-#d[, `:=`(
-#  exposure_start_date = TN_DOB,
-#  exposure_end_date = TN_DOB %m+% years(4) - days(1)
-#)]
 
 # Filter address records to only those overlapping with exposure period
 # Keep addresses where the address period overlaps with the child's first year

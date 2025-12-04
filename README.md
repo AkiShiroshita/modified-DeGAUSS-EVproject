@@ -1,70 +1,73 @@
-# Modified DeGAUSS - Environmental Exposure Assessment Pipeline (**Under Construction**)
+## Modified DeGAUSS – Environmental Exposure Assessment Pipeline (**Under Construction**)
 
-## Overview
+### Overview
 
-This project provides a pipeline for environmental exposure assessment using modified DeGAUSS.
+This project provides a pipeline for environmental exposure assessment using a modified version of DeGAUSS.
 
-It can process both child cohort and dyad (mother-child pair) cohort data.
+It can process both child cohort data and dyad (mother–child pair) cohort data.
 
-If  you require information regarding our motivation for this program, a list of environmental variables, or detailed explanations for practitioners, please visit [this website](https://akishiroshita.github.io/modified-DeGAUSS-instruction/).
+For information about the motivation for this program, the list of environmental exposure variables, and detailed guidance for practitioners, please visit [this website](https://akishiroshita.github.io/modified-DeGAUSS-instruction/).
 
 ## File Structure
 
-### Main Scripts
+### Main scripts
 
-- **`modified_degauss_run_child.R`**: Child cohort data processing pipeline
+- **`modified_degauss_run_infancy.R`**: Child cohort processing pipeline (exposure period during infancy, from birth to the 1st birthday).
   
-- **`modified_degauss_run_dyad.R`**: Dyad cohort data processing pipeline
+- **`modified_degauss_run_dyad.R`**: Dyad cohort (mother–child pair) processing pipeline.
 
-### Processing Steps
+- **`modified_degauss_run_childhood.R`**: Child cohort processing pipeline (exposure period during childhood, from birth to the 4th birthday).
+
+### Processing steps
 
 Each pipeline consists of the following steps:
 
-1. **Initial Set-up** (`R/initial_set_up.R`)
-   - Loads required libraries and sets up environment variables
+1. **Initial setup** (`R/initial_set_up.R`)
+   - Loads required libraries and sets environment variables.
 
-2. **Data Cleaning** 
-   - `R/child_cohort_preparation_simple.R` (for child cohort)
-   - `R/dyad_cohort_preparation_simple.R` (for dyad cohort)
-   - Cleans and standardizes input data
+2. **Data cleaning** 
+   - `R/child_cohort_preparation_infancy.R` (child cohort, exposure during infancy: birth to 1st birthday).
+   - `R/dyad_cohort_preparation_simple.R` (dyad cohort).
+   - `R/child_cohort_preparation_childhood.R` (child cohort, exposure during childhood: birth to 4th birthday).
+   - Cleans and standardizes input data.
 
-3. **Geocoding** (`R/geocoding_child.R` or `R/geocoding_pregnancy.R`)
-   - Converts addresses to geographic coordinates (latitude/longitude)
+3. **Geocoding** (`R/geocoding_infancy.R`, `R/geocoding_pregnancy.R`, or `R/geocoding_childhood.R`)
+   - Converts addresses to geographic coordinates (latitude/longitude).
 
-4. **Census Boundary & Redlining** (`R/census.R`)
-   - Assigns census tract boundaries and historical redlining data
+4. **Census boundary & redlining** (`R/census.R`)
+   - Assigns census tract boundaries and historical redlining indicators.
 
-5. **Road Proximity** (`R/road.R`)
-   - Calculates distance to nearest roads
+5. **Road proximity** (`R/road.R`)
+   - Calculates distance to the nearest roads.
 
 6. **Greenspace** (`R/green.R`)
-   - Calculates greenspace exposure metrics 
+   - Calculates greenspace exposure metrics.
 
-7. **Deprivation Index** (`R/dep_index.R`)
-   - Assigns area-level deprivation/socioeconomic status indices
+7. **Deprivation index** (`R/dep_index.R`)
+   - Assigns area-level deprivation / socioeconomic status indices.
 
-8. **Road Density** (`R/road_density.R`)
-   - Calculates road density (length of roads per unit area)
+8. **Road density** (`R/road_density.R`)
+   - Calculates road density (length of roads per unit area).
 
-9. **NO2 Exposure** (`R/no2_monthly_child.R` or `R/no2_monthly_pregnancy.R`)
-   - Assigns NO2 exposure using monthly concentration data
+9. **NO2 exposure** (`R/no2_monthly_infancy.R`, `R/no2_monthly_pregnancy.R`, or `R/no2_monthly_childhood.R`)
+   - Assigns NO₂ exposure using monthly concentration data.
 
-10. **Black Carbon (BC) Exposure** (`R/bc_child.R` or `R/bc_pregnancy.R`)
-    - Assigns black carbon exposure estimates
+10. **Black carbon (BC) exposure** (`R/bc_infancy.R`, `R/bc_pregnancy.R`, or `R/bc_childhood.R`)
+    - Assigns black carbon exposure estimates.
 
 11. **Tabulation** 
-    - `R/tabulation.R` (for child cohort)
-    - `R/tabulation_dyad.R` (for dyad cohort)
-    - Creates summary tables
+    - `R/tabulation.R` (child cohort).
+    - `R/tabulation_dyad.R` (dyad cohort).
+    - Creates summary tables.
 
-12. **Final Cleaning**
-    - `R/final_clean_child.R` (for child cohort)
-    - `R/final_clean_dyad.R` (for dyad cohort)
-    - Final data cleaning and PHI (Protected Health Information) removal
-
+12. **Final cleaning**
+    - `R/final_clean_child.R` (child cohort).
+    - `R/final_clean_dyad.R` (dyad cohort).
+    - Performs final data cleaning and removes PHI (Protected Health Information).
+    
 ## Setup
 
-### Initial Setup
+### Initial setup
 
 When opening this project for the first time, run the following commands:
 
@@ -77,17 +80,15 @@ renv::restore()
 
 Required packages are managed in the `renv.lock` file. Running `renv::restore()` will install the appropriate package versions.
 
-### Every Session Launch
+### Every session
 
-Every time you launch an R session, run the "Initial Set-up" section in the main script.
-
+Every time you start a new R session, run the **Initial setup** section in the main script.
+    
 ## Usage
 
-### 1. Configure Paths
+### 1. Configure paths
 
-Uncomment the path configuration for the cohort version you want to process:
-
-**For child cohort** (`modified_degauss_run_child.R`):
+**Child cohort – infancy (birth to 1st birthday)** (`modified_degauss_run_infancy.R`):
 ```r
 # ver 1
 input_folder <- "W:/Data/Tan/subset"
@@ -96,7 +97,7 @@ output_folder <- "Y:/modified_degauss/child_cohort_1"
 temp_folder <- "W:/Data/Tan/temp/temp_degauss_child1"
 ```
 
-**For dyad cohort** (`modified_degauss_run_dyad.R`):
+**Dyad cohort** (`modified_degauss_run_dyad.R`):
 ```r
 # ver 1
 input_folder <- "W:/Data/Tan/subset"
@@ -105,31 +106,60 @@ output_folder <- "Y:/modified_degauss/dyad_cohort_1"
 temp_folder <- "W:/Data/Tan/temp/temp_degauss_dyad1"
 ```
 
-### 2. Execute Pipeline
+**Child cohort – childhood (birth to 4th birthday)** (`modified_degauss_run_childhood.R`):
+```r
+# ver 21
+input_folder <- "W:/Data/Tan/subset"
+input_file <- "ev_address_1.csv"
+output_folder <- "Y:/modified_degauss/child_cohort_21"
+temp_folder <- "W:/Data/Tan/temp/temp_degauss_child21"
+```
 
-Run all sections sequentially from the "Initial Set-up" section onward. Each step depends on outputs from previous steps, so they must be run without interruption.
+### 2. Execute pipeline
 
-### 3. Check Logs
+Run all sections sequentially from the **Initial setup** section onward.  
+Each step depends on outputs from previous steps, so they must be run without interruption.
+
+### 3. Check logs
 
 After processing completes, timing logs are saved to the following files:
 - Child cohort: `tictoc_child_log.txt`
 - Dyad cohort: `tictoc_dyad_log.txt`
+    
+## Input data requirements
 
-## Input Data Requirements
+- Address data in CSV format.
+- Required columns:
 
-- CSV format address data file
-- Required columns are defined in each cohort preparation script
+**Child cohort**:  
 
-## Output Data
+- `recip`  
+- `TN_DOB` (Year-Month-Day)  
+- `BEG` (set to the first day of the month corresponding to the original BEG date in the address file)  
+- `END` (set to the first day of the month corresponding to the original END date in the address file)  
+- `ADDRESS`  
 
-Processed data is saved to `output_folder` with all PHI (Protected Health Information) removed. Intermediate files (which may contain PHI) are saved to `temp_folder`.
+**Dyad cohort**:  
 
-## Important Notes
+- `recip`
+- `mrecip`
+- `TN_DOB` (Year-Month-Day)  
+- `LMP` (Year-Month-Day)  
+- `BEG` (set to the first day of the month corresponding to the original BEG date in the address file)  
+- `END` (set to the first day of the month corresponding to the original END date in the address file)
+- `ADDRESS`
 
-1. **PHI Handling**: Intermediate files may contain PHI. Manage `temp_folder` data appropriately and ensure compliance with data protection regulations.
+## Output data
 
-2. **Optional Steps**: Some steps (Parsing, Traffic density, Road proximity × traffic density) are currently commented out and can be enabled if needed.
+Processed data are saved to `output_folder` with all PHI (Protected Health Information) removed.  
+Intermediate files (which may contain PHI) are saved to `temp_folder`.
 
+## Important notes
+
+1. **PHI handling**: Intermediate files may contain PHI. Manage `temp_folder` appropriately and ensure compliance with data protection regulations.
+    
+2. **Optional steps**: Some steps (parsing, traffic density, road proximity × traffic density) are currently commented out and can be enabled if needed.
+    
 ## License
 
 This project is licensed under the MIT License.

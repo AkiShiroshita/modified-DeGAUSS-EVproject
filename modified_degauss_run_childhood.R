@@ -12,41 +12,41 @@
 # What is the path to the output folder where you’d like to store the processed data after removing all PHI data?
 # If you would like to create a temporary folder in a different location to store intermediate files containing PHI, please specify the path.
 
-# ver 1
+# ver 21
 input_folder <- "W:/Data/Tan/subset"
 input_file <- "ev_address_1.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_1"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child1"
+output_folder <- "Y:/modified_degauss/child_cohort_21"
+temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child21"
 
-# ver 2
+# ver 22
 input_folder <- "W:/Data/Tan/subset"
 input_file <- "ev_address_2.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_2"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child2"
+output_folder <- "Y:/modified_degauss/child_cohort_22"
+temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child22"
 
-# ver 3
+# ver 23
 input_folder <- "W:/Data/Tan/subset"
 input_file <- "ev_address_3.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_3"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child3"
+output_folder <- "Y:/modified_degauss/child_cohort_23"
+temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child23"
 
-# ver 4
+# ver 24
 input_folder <- "W:/Data/Tan/subset"
 input_file <- "ev_address_4.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_4"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child4"
+output_folder <- "Y:/modified_degauss/child_cohort_24"
+temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child24"
 
-# ver 5
+# ver 25
 input_folder <- "W:/Data/Tan/subset"
 input_file <- "ev_address_5.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_5"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child5"
+output_folder <- "Y:/modified_degauss/child_cohort_25"
+temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child25"
 
-# ver 6
+# ver 26
 input_folder <- "W:/Data/Tan/subset"
 input_file <- "ev_address_6.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_6"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child6"
+output_folder <- "Y:/modified_degauss/child_cohort_26"
+temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child26"
 
 ##############################################################
 # Execute this script from the next section ####
@@ -61,7 +61,7 @@ source("R/initial_set_up.R", echo = FALSE, print.eval = TRUE)
 # Cleaning ----------------------------------------------------------------
 
 tictoc::tic("Cleaning")
-source("R/child_cohort_preparation_simple.R", echo = FALSE, print.eval = FALSE)
+source("R/child_cohort_preparation_simple_childhood.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # Parsing -----------------------------------------------------------------
@@ -72,7 +72,7 @@ tictoc::toc(log = TRUE)
 
 # Geocoding ---------------------------------------------------------------
 
-tictoc::tic("Geocoding")
+tictoc::tic("Geocoding_childhood")
 source("R/geocoding_child.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
@@ -122,13 +122,13 @@ tictoc::toc(log = TRUE)
 
 tictoc::tic("NO2")
 #source("R/no2.R", echo = FALSE, print.eval = FALSE)
-source("R/no2_monthly_child.R", echo = FALSE, print.eval = FALSE)
+source("R/no2_monthly_childhood.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # BC ----------------------------------------------------------------------
 
 tictoc::tic("BC")
-source("R/bc_child.R", echo = FALSE, print.eval = FALSE)
+source("R/bc_childhood.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # Tabulation data ---------------------------------------------------------

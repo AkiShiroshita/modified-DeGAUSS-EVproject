@@ -127,7 +127,7 @@ track$unique_n[track$status == "After removing children who moved out of TN"] <-
 # Cleaning exposure periods
 # Resolve gaps and overlaps in address history to create continuous time spans
 # For child cohort, exposure period is from birth to birth + 1 year
-source("R/exposure_period_cleaning_child.R", echo = FALSE, print.eval = FALSE)
+source("R/exposure_period_cleaning_infancy.R", echo = FALSE, print.eval = FALSE)
 d |> fst::write_fst(paste0(temp_folder, '/', 'temp_geocoded_cleaned.fst'), compress = 100)
 
 # Nest data by location

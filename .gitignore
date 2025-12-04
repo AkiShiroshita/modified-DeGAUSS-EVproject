@@ -35,6 +35,10 @@ tmp/
 
 # Output files
 output/
+*.Rmd
+*.docx
+README.html
+figures/
 
 # Python
 __pycache__/
@@ -75,3 +79,4 @@ desktop.ini
 *.zip
 *.tar
 
+.Rproj.user
