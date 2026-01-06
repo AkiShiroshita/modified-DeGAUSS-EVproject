@@ -200,7 +200,8 @@ out_template <- dplyr::tibble(
 # Main geocoding function
 # Converts a single address string to geographic coordinates
 # Returns a data.table with geocoding results (lat, lon, score, precision, etc.)
-  # Validate input is character
+# Validate input is character
+geocode2 <- function(addr_string) {
   stopifnot(class(addr_string) == "character")
   
   # Call geocoder container
