@@ -116,7 +116,7 @@ track$unique_n[track$status == "After removing imprecise geocoding"] <- nrow(dis
 
 # Removing children who moved out of TN
 # Study is limited to Tennessee residents
-d_tn_out <- d[state != "TN"]
+d_tn_out <- d[state != "TN"] # this approach is not perfect, as states may have missing value after geocoding
 ids_tn_out <- distinct(d_tn_out, recip) %>% pull(recip)
 d <- d[!recip %in% ids_tn_out]
 
