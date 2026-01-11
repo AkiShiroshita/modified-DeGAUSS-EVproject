@@ -32,9 +32,9 @@ road_types_to_keep <- c('Interstate', 'Principal Arterial - Other Freeways and E
 traffic_volume <- st_as_sf(traffic_volume[road_type %in% road_types_to_keep, 
                                           -c("state_fips", "county_fips")])
 
-# Create a 400m radius buffer around each address
+# Create a 500m radius buffer around each address
 # This buffer captures nearby traffic exposure
-d_buffer <- sf::st_buffer(d, dist = 400) 
+d_buffer <- sf::st_buffer(d, dist = 500) 
 
 # Extract traffic density data within each buffer
 # Intersection finds all road segments that fall within each buffer

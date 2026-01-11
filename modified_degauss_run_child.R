@@ -61,7 +61,7 @@ source("R/initial_set_up.R", echo = FALSE, print.eval = TRUE)
 # Cleaning ----------------------------------------------------------------
 
 tictoc::tic("Cleaning")
-source("R/child_cohort_preparation_simple_childhood.R", echo = FALSE, print.eval = FALSE)
+source("R/child_cohort_preparation_simple.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # Parsing -----------------------------------------------------------------
@@ -72,7 +72,7 @@ tictoc::toc(log = TRUE)
 
 # Geocoding ---------------------------------------------------------------
 
-tictoc::tic("Geocoding_childhood")
+tictoc::tic("Geocoding")
 source("R/geocoding_child.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
@@ -102,9 +102,9 @@ tictoc::toc(log = TRUE)
 
 # Traffic density ---------------------------------------------------------
 
-#tictoc::tic("Traffic density")
-#source("R/aadt.R", echo = FALSE, print.eval = FALSE)
-#tictoc::toc(log = TRUE)
+tictoc::tic("Traffic density")
+source("R/aadt.R", echo = FALSE, print.eval = FALSE)
+tictoc::toc(log = TRUE)
 
 # Road proximity * traffic density ----------------------------------------
 
@@ -122,20 +122,20 @@ tictoc::toc(log = TRUE)
 
 tictoc::tic("NO2")
 #source("R/no2.R", echo = FALSE, print.eval = FALSE)
-source("R/no2_monthly_childhood.R", echo = FALSE, print.eval = FALSE)
+source("R/no2_monthly_child.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # BC ----------------------------------------------------------------------
 
 tictoc::tic("BC")
-source("R/bc_childhood.R", echo = FALSE, print.eval = FALSE)
+source("R/bc_child.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # Tabulation data ---------------------------------------------------------
 
-tictoc::tic("Tabulation data")
-source("R/tabulation.R", echo = FALSE, print.eval = FALSE)
-tictoc::toc(log = TRUE)
+#tictoc::tic("Tabulation data")
+#source("R/tabulation_child.R", echo = FALSE, print.eval = FALSE)
+#tictoc::toc(log = TRUE)
 
 # Final cleaning ----------------------------------------------------------
 

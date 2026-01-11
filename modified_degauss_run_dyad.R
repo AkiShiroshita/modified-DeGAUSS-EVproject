@@ -67,7 +67,7 @@ tictoc::toc(log = TRUE)
 # Geocoding ---------------------------------------------------------------
 
 tictoc::tic("Geocoding")
-source("R/geocoding_pregnancy.R", echo = FALSE, print.eval = FALSE)
+source("R/geocoding_dyad.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # Census boundary & redlining ---------------------------------------------
@@ -96,9 +96,9 @@ tictoc::toc(log = TRUE)
 
 # Traffic density ---------------------------------------------------------
 
-#tictoc::tic("Traffic density")
-#source("R/aadt.R", echo = FALSE, print.eval = FALSE)
-#tictoc::toc(log = TRUE)
+tictoc::tic("Traffic density")
+source("R/aadt.R", echo = FALSE, print.eval = FALSE)
+tictoc::toc(log = TRUE)
 
 # Road proximity * traffic density ----------------------------------------
 
@@ -117,21 +117,21 @@ tictoc::toc(log = TRUE)
 # should tweak my program!
 tictoc::tic("NO2")
 #source("R/no2.R", echo = FALSE, print.eval = FALSE)
-source("R/no2_monthly_pregnancy.R", echo = FALSE, print.eval = FALSE)
+source("R/no2_monthly_dyad.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # BC ----------------------------------------------------------------------
 
 # should tweak my program!
 tictoc::tic("BC")
-source("R/bc_pregnancy.R", echo = FALSE, print.eval = FALSE)
+source("R/bc_dyad.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # Tabulation data ---------------------------------------------------------
 
-tictoc::tic("Tabulation data")
-source("R/tabulation_dyad.R", echo = FALSE, print.eval = FALSE)
-tictoc::toc(log = TRUE)
+#tictoc::tic("Tabulation data")
+#source("R/tabulation_dyad.R", echo = FALSE, print.eval = FALSE)
+#tictoc::toc(log = TRUE)
 
 # Final cleaning ----------------------------------------------------------
 

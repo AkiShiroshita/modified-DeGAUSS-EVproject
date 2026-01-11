@@ -1,8 +1,8 @@
 #### Algorithms ##############################################################################################################
 # 1. Define the exposure period for each child: 
-# creates an exposure_start_date (the child's date of birth) and an exposure_end_date (the child's date of birth + 1 year)
+# creates an exposure_start_date (the child's date of birth) and an exposure_end_date (the child's date of birth + 4 years)
 # 
-# 2. Filtering for the First Year of Life
+# 2. Filtering for the First Four Years of Life
 # keep only the address records from d that overlap with the exposure period
 
 # 3. Trimming the Timeline Edges
@@ -54,7 +54,7 @@ d[, `:=`(
 # end_date = TN_DOB + 1 year
 d[, `:=`(
   exposure_start_date = TN_DOB,
-  exposure_end_date = TN_DOB %m+% years(1) - days(1) # number of years in the exposure period
+  exposure_end_date = TN_DOB %m+% years(4) - days(1) # number of years in the exposure period
 )]
 
 # It finds rows in `d` overlapping
@@ -70,13 +70,13 @@ d[, `:=`(
 # Sort by the period start and end dates to prepare for merging
 setorder(d, recip, BEG, -END) # by END in descending order and remove duplicate addresses with the same BEG, assuming that the entry with the latest END date as the most appropriate one.
 d <- d[!duplicated(d, by = c('recip', 'BEG'))] # if multiple addresses were registered for the same person in the same period or the entire exposure period, pick up the first observation.
+# sort by END in ascending order
+setorder(d, recip, BEG, END)
+
 d[, `:=`(
   row_number = seq_len(.N),
   n_row = .N
 ), by = recip]
-
-# sort by END in ascending order
-setorder(d, recip, BEG, END)
 
 # Algorithms to merge consecutive data
 d[, `:=`(

@@ -11,7 +11,7 @@
 # Road density ----------------------------------------------------------
 
 # Load geocoded data with census, road proximity, greenspace, and deprivation data
-d <- read_rds(paste0(temp_folder, '/', 'temp_geocoded_census_road_greenspace_dep.rds')) 
+d <- read_rds(paste0(temp_folder, '/', 'temp_geocoded_census_road_greenspace_dep_aadt.rds')) 
 
 # Extract geometry for buffer creation
 # Create a separate spatial object with only geometry column
@@ -40,7 +40,7 @@ d$length_1400 <- suppressWarnings(get_line_length(roads = roads1400_projected))
 
 # Convert to data.table and save
 setDT(d)
-d |> readr::write_rds(paste0(temp_folder, '/', 'temp_geocoded_census_road_greenspace_dep_road_density.rds'), compress = 'gz')
+d |> readr::write_rds(paste0(temp_folder, '/', 'temp_geocoded_census_road_greenspace_dep_aadt_road_density.rds'), compress = 'gz')
 
 #rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv) # Remove all objects from the environment
 #gc() # Trigger garbage collection to free up memory

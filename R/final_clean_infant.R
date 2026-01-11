@@ -1,7 +1,7 @@
 # ============================================================================
-# Final Data Cleaning - Dyad Cohort
+# Final Data Cleaning - Child Cohort
 # ============================================================================
-# This script performs final data cleaning and preparation for the dyad cohort:
+# This script performs final data cleaning and preparation for the child cohort:
 # 1. Combines data from multiple processing batches
 # 2. Calculates relocation indicators
 # 3. Selects final variables for analysis
@@ -14,7 +14,7 @@
 
 # Define temporary folder and file paths for multiple batches
 temp_folder <-   "W:/Data/Tan/temp/"
-files <- paste0(temp_folder, "/temp_degauss_dyad", 1:5, "/temp_geocoded_census_road_greenspace_dep_aadt_road_density.rds")
+files <- paste0(temp_folder, "/temp_degauss_child", 1:6, "/temp_geocoded_census_road_greenspace_dep_road_density.rds")
 
 # Combine data from all batches
 # Read and unnest nested data from each batch file
@@ -32,7 +32,7 @@ setDT(combined_data)
 setorder(combined_data, recip, start_date, end_date)
 
 # Calculate relocation indicator
-# Identifies when a mother moved to a different location during pregnancy
+# Identifies when a child moved to a different location (different coordinates)
 coords <- sf::st_coordinates(sf::st_transform(st_as_sf(combined_data), 5072))
 d_location <- combined_data
 d_location[, `:=` (lon = coords[,1], lat = coords[,2])]
@@ -55,25 +55,11 @@ d_location <- d_location %>%
 # Combine main data with relocation indicator
 combined_data <- cbind(combined_data, d_location)
 
-#rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv) # Remove all objects from the environment
-#gc() # Trigger garbage collection to free up memory
-#if (rstudioapi::isAvailable()) rstudioapi::restartSession() # restart R studio to completely remove any cache
-
-# Remove unsharable or unnecessary columns
-#plan(sequential)
-
-#cols_to_remove <- c("census_tract_id", "geometry", "address", "number", "state", "street", 
-#                    "zip", "score", "prenum", "precision", 
-#                    "census_block_group_id_2020", "data", "fips_county")
-#
-#d[, (cols_to_remove) := NULL]
-
 # Select final variables for analysis
-# Includes: identifiers (child and mother), dates, relocation, census boundaries,
-# redlining, road proximity, road density, greenspace, and deprivation indices
+# Includes: identifiers, dates, relocation, census boundaries, redlining,
+# road proximity, road density, greenspace, and deprivation indices
 # Note: Traffic density variables (AADT) are commented out but available if needed
-columns_to_select <- c("recip", "mrecip", "start_date", "end_date", "relocation", "city",
-                       "TN_DOB", "LMP",  # Child DOB and Last Menstrual Period
+columns_to_select <- c("recip", "start_date", "end_date", "relocation", "city",
                        "county_fips2010","county_fips2020",
                        "census_block_group_id_2010", "census_block_group_id_2020",
                        "census_tract_id_2010", "census_tract_id_2020",
@@ -87,27 +73,24 @@ columns_to_select <- c("recip", "mrecip", "start_date", "end_date", "relocation"
                        "vehicle_meters_moving", "vehicle_meters_stop_go",
                        "truck_meters_moving", "truck_meters_stop_go"
                        #"dist_near", "aadt_near"
-)
+                       )
 
 # Select only specified columns
 combined_data_selected <- combined_data[, ..columns_to_select]
 
 # Save final environmental exposure data (long format: one row per address period)
 # Change the directory as needed
-#combined_data_selected |> readr::write_csv("Y:/data/modified_degauss/env_data_long_child.csv")
-combined_data_selected |> readr::write_csv("Y:/data/modified_degauss/env_data_long_dyad.csv")
+combined_data_selected |> readr::write_csv("Y:/data/modified_degauss/env_data_long_infant.csv")
 
 #rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv) # Remove all objects from the environment
 #gc() # Trigger garbage collection to free up memory
 #if (rstudioapi::isAvailable()) rstudioapi::restartSession() # restart R studio to completely remove any cache
 
-# Finally, delete the 'temp' folder.
-
 # Final cleaning (NO2) ---------------------------------------------------------
 # Combines NO2 exposure summaries from multiple batches
 
 temp_folder <-   "W:/Data/Tan/temp/"
-files <- paste0(temp_folder, "/temp_degauss_dyad", 1:5, "/d_no2_summary.rds")
+files <- paste0(temp_folder, "/temp_degauss_child", 1:6, "/d_no2_summary.rds")
 
 # Combine NO2 summaries from all batches
 combined_data <- rbindlist(lapply(files, read_rds), use.names = TRUE, fill = TRUE)
@@ -115,22 +98,19 @@ combined_data <- rbindlist(lapply(files, read_rds), use.names = TRUE, fill = TRU
 setDT(combined_data)
 setorder(combined_data, recip)
 
-# Save final NO2 summary data (one row per child: average NO2 exposure during pregnancy)
+# Save final NO2 summary data (one row per child: average NO2 exposure)
 # Change the directory as needed
-#combined_data |> readr::write_csv("Y:/data/modified_degauss/no2_summary_infancy.csv")
-combined_data |> readr::write_csv("Y:/data/modified_degauss/no2_summary_dyad.csv")
+combined_data |> readr::write_csv("Y:/data/modified_degauss/no2_summary_infant.csv")
 
 #rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv) # Remove all objects from the environment
 #gc() # Trigger garbage collection to free up memory
 #if (rstudioapi::isAvailable()) rstudioapi::restartSession() # restart R studio to completely remove any cache
 
-# Finally, delete the 'temp' folder.
-
 # Final cleaning (BC) ---------------------------------------------------------
 # Combines black carbon exposure summaries from multiple batches
 
 temp_folder <-   "W:/Data/Tan/temp/"
-files <- paste0(temp_folder, "/temp_degauss_dyad", 1:5, "/d_bc_summary.rds")
+files <- paste0(temp_folder, "/temp_degauss_child", 1:6, "/d_bc_summary.rds")
 
 # Combine BC summaries from all batches
 combined_data <- rbindlist(lapply(files, read_rds), use.names = TRUE, fill = TRUE)
@@ -138,10 +118,9 @@ combined_data <- rbindlist(lapply(files, read_rds), use.names = TRUE, fill = TRU
 setDT(combined_data)
 setorder(combined_data, recip)
 
-# Save final BC summary data (one row per child: average BC exposure during pregnancy)
+# Save final BC summary data (one row per child: average BC exposure)
 # Change the directory as needed
-#combined_data |> readr::write_csv("Y:/data/modified_degauss/bc_summary_infancy.csv")
-combined_data |> readr::write_csv("Y:/data/modified_degauss/bc_summary_dyad.csv")
+combined_data |> readr::write_csv("Y:/data/modified_degauss/bc_summary_infant.csv")
 
 #rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv) # Remove all objects from the environment
 #gc() # Trigger garbage collection to free up memory
@@ -151,7 +130,7 @@ combined_data |> readr::write_csv("Y:/data/modified_degauss/bc_summary_dyad.csv"
 # # Combines deprivation index data from multiple batches for Britt's project
 # 
 # temp_folder <-   "W:/Data/Tan/temp/"
-# files <- paste0(temp_folder, "/temp_degauss_dyad", 1:5, "/temp_geocoded_deprivation_britt.fst")
+# files <- paste0(temp_folder, "/temp_degauss_child", 1:6, "/temp_geocoded_deprivation_britt.fst")
 # 
 # # Combine deprivation index data from all batches
 # combined_data <- rbindlist(
@@ -207,9 +186,4 @@ combined_data |> readr::write_csv("Y:/data/modified_degauss/bc_summary_dyad.csv"
 # 
 # # Save final deprivation index data (long format: one row per address period)
 # #combined_data_britt %>% write_csv("Y:/Britt_preliminary_data/preliminary_analysis_data/deprivation_index_long.csv")
-# #combined_data_britt %>% write_csv("Y:/data/modified_degauss/deprivation_index_long.csv")
-# 
-# # tenncare data for Britt
-# #tenncare <- read_rds("Y:/Aki_env_data_test/TennCare/asthma_analysis/child_cohort_temp.rds")
-# #tenncare %>% 
-# #  write_csv("Y:/Britt_preliminary_data/preliminary_analysis_data/tenncare_data_wide.csv")
+# combined_data_britt %>% write_csv("Y:/data/modified_degauss/deprivation_index_long_infant.csv")

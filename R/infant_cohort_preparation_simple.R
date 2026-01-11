@@ -21,9 +21,6 @@
 # Load input address data
 d <- fread(paste0(input_folder, '/', input_file))
 
-# Standardize column name
-setnames(d, "ADDRESS", "address")
-
 ## Start from here ----------------------------------------------------------
 
 # Convert to data.table (if not already)
@@ -57,6 +54,8 @@ d[, `:=`(
 # Keep addresses where the address period overlaps with the child's first year
 # Overlap condition: exposure_start_date <= END AND exposure_end_date >= BEG
 d <- d[exposure_start_date <= END & exposure_end_date >= BEG]
+
+setorder(d, recip, BEG, END) 
 
 # Save file ---------------------------------------------------------------
 

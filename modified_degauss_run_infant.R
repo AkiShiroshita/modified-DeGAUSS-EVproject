@@ -61,7 +61,7 @@ source("R/initial_set_up.R", echo = FALSE, print.eval = TRUE)
 # Cleaning ----------------------------------------------------------------
 
 tictoc::tic("Cleaning")
-source("R/child_cohort_preparation_simple_infancy.R", echo = FALSE, print.eval = FALSE)
+source("R/infant_cohort_preparation_simple.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # Parsing -----------------------------------------------------------------
@@ -73,7 +73,7 @@ tictoc::toc(log = TRUE)
 # Geocoding ---------------------------------------------------------------
 
 tictoc::tic("Geocoding")
-source("R/geocoding_infancy.R", echo = FALSE, print.eval = FALSE)
+source("R/geocoding_infant.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # Census boundary & redlining ---------------------------------------------
@@ -102,9 +102,9 @@ tictoc::toc(log = TRUE)
 
 # Traffic density ---------------------------------------------------------
 
-#tictoc::tic("Traffic density")
-#source("R/aadt.R", echo = FALSE, print.eval = FALSE)
-#tictoc::toc(log = TRUE)
+tictoc::tic("Traffic density")
+source("R/aadt.R", echo = FALSE, print.eval = FALSE)
+tictoc::toc(log = TRUE)
 
 # Road proximity * traffic density ----------------------------------------
 
@@ -122,30 +122,30 @@ tictoc::toc(log = TRUE)
 
 tictoc::tic("NO2")
 #source("R/no2.R", echo = FALSE, print.eval = FALSE)
-source("R/no2_monthly_infancy.R", echo = FALSE, print.eval = FALSE)
+source("R/no2_monthly_infant.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # BC ----------------------------------------------------------------------
 
 tictoc::tic("BC")
-source("R/bc_infancy.R", echo = FALSE, print.eval = FALSE)
+source("R/bc_infant.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # Tabulation data ---------------------------------------------------------
 
-tictoc::tic("Tabulation data")
-source("R/tabulation.R", echo = FALSE, print.eval = FALSE)
-tictoc::toc(log = TRUE)
+#tictoc::tic("Tabulation data")
+#source("R/tabulation_infant.R", echo = FALSE, print.eval = FALSE)
+#tictoc::toc(log = TRUE)
 
 # Final cleaning ----------------------------------------------------------
 
 # for the child cohort
 tictoc::tic("Final cleaning")
-source("R/final_clean_child.R", echo = FALSE, print.eval = FALSE)
+source("R/final_clean_infant.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
 # Retrieve the logs
 tictoc_logs <- unlist(tic.log(format = TRUE))
 print(tictoc_logs)
-writeLines(tictoc_logs, "tictoc_child_log.txt")
+writeLines(tictoc_logs, "tictoc_infant_log.txt")
 

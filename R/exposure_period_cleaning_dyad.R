@@ -71,13 +71,13 @@ d[, `:=`(
 # Sort by the period start and end dates to prepare for merging
 setorder(d, recip, BEG, -END) # by END in descending order and remove duplicate addresses with the same BEG, assuming that the entry with the latest END date as the most appropriate one.
 d <- d[!duplicated(d, by = c('recip', 'BEG'))] # if multiple addresses were registered for the same person in the same period or the entire exposure period, pick up the first observation.
+# sort by END in ascending order
+setorder(d, recip, BEG, END)
+
 d[, `:=`(
   row_number = seq_len(.N),
   n_row = .N
 ), by = recip]
-
-# sort by END in ascending order
-setorder(d, recip, BEG, END)
 
 # Algorithms to merge consecutive data
 d[, `:=`(

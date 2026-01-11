@@ -1,8 +1,8 @@
 # ============================================================================
-# Geocoding Script - Child Cohort
+# Geocoding Script - Pregnancy/Dyad Cohort
 # ============================================================================
 # This script geocodes addresses (converts addresses to lat/lon coordinates)
-# for the child cohort during infancy period (first year of life).
+# for the dyad (mother-child) cohort during pregnancy period.
 # 
 # Steps:
 # 1. Clean and filter addresses (remove PO boxes, institutional addresses)
@@ -21,12 +21,13 @@ d <- fst::read_fst(paste0(temp_folder, '/', 'temp_cleaned.fst'), as.data.table =
 setDT(d)
 
 # Create tracking table to monitor data loss at each step
-# Tracks number of records (n) and unique children (unique_n)
+# Tracks number of records (n), unique mothers (unique_n), and unique children (unique_child_n)
 track <- tibble(
   status = c("Before address cleaning", "After address cleaning",
-             "After geocoding", "After removing imprecise geocoding", "After removing children who moved out of TN"),
+             "After geocoding", "After removing imprecise geocoding", "After removing mothers who moved out of TN"),
   n = NA_integer_,
-  unique_n = NA_integer_
+  unique_n = NA_integer_,
+  unique_child_n = NA_integer_
 )
 
 # Record initial counts
@@ -45,6 +46,7 @@ d[, non_address_text := dht::address_is_nonaddress(address)]
 
 ## Exclude 'bad' addresses from geocoding
 # Remove PO boxes, institutional addresses, and non-address text
+# These cannot be reliably geocoded or represent invalid addresses
 d <- d[!(cincy_inst_foster_addr) & !(po_box) & !(non_address_text)]
 # Remove flag columns (no longer needed)
 d[, `:=`(cincy_inst_foster_addr = NULL, po_box = NULL, non_address_text = NULL)]
@@ -53,7 +55,7 @@ d[, `:=`(cincy_inst_foster_addr = NULL, po_box = NULL, non_address_text = NULL)]
 track$n[track$status == "After address cleaning"] <- nrow(d)
 track$unique_n[track$status == "After address cleaning"] <- nrow(distinct(d, recip))
 
-# Start geocoder container
+# Start geocoder container and ensure it stops on exit
 # The geocoder container must be running before geocoding
 start_geocoder_container2()
 
@@ -62,6 +64,7 @@ start_geocoder_container2()
 core <- 24
 
 # Set up parallel processing plan (use multisession for local parallelism)
+# multisession creates multiple R sessions on the same machine
 future::plan(multisession, workers = core, gc = TRUE)  # to use multiple cores explicitly
 
 # Geocode all addresses in parallel with progress bar
@@ -78,12 +81,15 @@ d[, geocodes := lapply(geocodes, function(x) as.data.table(lapply(x, unlist)))]
 #future::plan(sequential)  # Switch back to sequential processing if needed
 
 # Unnest geocoding results while keeping original columns
+# rbindlist combines all geocoding results into one table
 geo <- rbindlist(d[,geocodes], idcol = "row_index", fill = TRUE)
+# Merge geocoding results back with original data
 d <- merge(d[,!"geocodes"], geo, by = "row_index", all.x=TRUE)
 
 #d <- d[, c(.SD, geocodes[[1]]), by = row_index]  # Alternative merge method
 
 # Keep only the first row per original row_index
+# Some addresses may return multiple geocoding results; keep the first one
 d <- d[, .SD[1], by = row_index]
 
 # Remove temporary columns
@@ -98,46 +104,51 @@ d |> fst::write_fst(paste0(temp_folder, '/', 'temp_geocoded.fst'), compress = 10
 # Reload geocoded data for quality filtering
 d <- fst::read_fst(paste0(temp_folder, '/', 'temp_geocoded.fst'), as.data.table = TRUE)
 
-# Record counts after geocoding
 track$n[track$status == "After geocoding"] <- nrow(d)
-track$unique_n[track$status == "After geocoding"] <- nrow(distinct(d, recip))
+track$unique_n[track$status == "After geocoding"] <- nrow(distinct(d, mrecip))
+track$unique_child_n[track$status == "After geocoding"] <- nrow(distinct(d, recip))
 
 # Filter geocoding results by quality
 # Keep only geocodes with valid coordinates
 d <- d[!is.na(lat) & !is.na(lon)]
-# Keep only high-precision geocodes (range or street level)
+# Keep only high-precision geocodes (range or street level, not city/state level)
 d <- d[precision == "range" | precision == "street"]
 # Keep only geocodes with score >= 0.5 (higher score = better match)
 d <- d[score>=0.5]
 
 # Record counts after quality filtering
 track$n[track$status == "After removing imprecise geocoding"] <- nrow(d)
-track$unique_n[track$status == "After removing imprecise geocoding"] <- nrow(distinct(d, recip))
+track$unique_n[track$status == "After removing imprecise geocoding"] <- nrow(distinct(d, mrecip))
+track$unique_child_n[track$status == "After removing imprecise geocoding"] <- nrow(distinct(d, recip))
 
-# Removing children who moved out of TN
+# Removing mothers who moved out of TN
 # Study is limited to Tennessee residents
+# Identify mothers with any address outside TN
 d_tn_out <- d[state != "TN"] # this approach is not perfect, as states may have missing value after geocoding
 ids_tn_out <- distinct(d_tn_out, recip) %>% pull(recip)
+# Remove all records for mothers who moved out of TN
 d <- d[!recip %in% ids_tn_out]
 
-# Record counts after removing out-of-state children
-track$n[track$status == "After removing children who moved out of TN"] <- nrow(d)
-track$unique_n[track$status == "After removing children who moved out of TN"] <- nrow(distinct(d, recip))
+track$n[track$status == "After removing mothers who moved out of TN"] <- nrow(d)
+track$unique_n[track$status == "After removing mothers who moved out of TN"] <- nrow(distinct(d, mrecip))
+track$unique_child_n[track$status == "After removing mothers who moved out of TN"] <- nrow(distinct(d, recip))
 
 # Cleaning exposure periods
 # Resolve gaps and overlaps in address history to create continuous time spans
-# For child cohort, exposure period is from birth to birth + 1 year
-source("R/exposure_period_cleaning_infancy.R", echo = FALSE, print.eval = FALSE)
+# For dyad cohort, exposure period is from LMP (last menstrual period) to child's birth
+source("R/exposure_period_cleaning_dyad.R", echo = FALSE, print.eval = FALSE)
 d |> fst::write_fst(paste0(temp_folder, '/', 'temp_geocoded_cleaned.fst'), compress = 100)
 
 # Nest data by location
 # Group all records by unique lat/lon coordinates
+# This reduces data size and speeds up spatial operations
 d <- fst::read_fst(paste0(temp_folder, '/', 'temp_geocoded_cleaned.fst'), as.data.table = TRUE)
 
 # Save tracking table
 track |> readr::write_csv(paste0(output_folder, '/', 'track.csv'))
 
 # Nest all records with same coordinates into a list column
+# Each row represents one unique location with all address records at that location
 d <- d[, .(data = list(.SD)), by = .(lat, lon)]
 
 # Convert to spatial object (sf) for spatial operations
