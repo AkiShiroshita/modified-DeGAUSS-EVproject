@@ -153,13 +153,15 @@ This program requires the following data format:
 
 -  Altough the program is flexible, the ideal address format is "first address line" (you may not include second address line, but it is acceptable) + "5-digits ZIP code"
 
+-  Add a flag indicating whether the address is located in Tennessee. This may be necessary to accurately identify subjects who moved outside TN (0=not TN, 1=TN, missing)
+
 **Dyad cohort**
 
-| recip | TN_DOB     | BEG        | END        | mrecip | LMP       | address                                |
-|-------|------------|------------|------------| -------|-----------|----------------------------------------|
-| 1     | 2010-10-14 | 2010-10-01 | 2010-10-01 | 101    | 2010-6-14 | 2600 Hillsboro Pike Nashville TN 37212 |   
-| 1     | 2010-10-14 | 2011-12-01 | 2011-12-01 | 101    | 2010-6-14 | 2600 Hillsboro Pike Nashville TN 37212 |
-| 2     | 2022-01-06 | 2022-01-01 | 2022-04-01 | 102    | 2021-10-02| 2600 Hillsboro Pike Nashville TN 37212 |
+| recip | TN_DOB     | BEG        | END        | mrecip | LMP       | address                                | TN_flag |
+|-------|------------|------------|------------| -------|-----------|----------------------------------------|---------|
+| 1     | 2010-10-14 | 2010-10-01 | 2010-10-01 | 101    | 2010-6-14 | 2600 Hillsboro Pike Nashville TN 37212 | 1       |
+| 1     | 2010-10-14 | 2011-12-01 | 2011-12-01 | 101    | 2010-6-14 | 2600 Hillsboro Pike Nashville TN 37212 | 1       |
+| 2     | 2022-01-06 | 2022-01-01 | 2022-04-01 | 102    | 2021-10-02| 2600 Hillsboro Pike Nashville TN 37212 | 1       |
 
 - `recip` (child ID)
 - `mrecip` (mother's ID)
@@ -168,34 +170,37 @@ This program requires the following data format:
 - `BEG` (set to the first day of the month corresponding to the original BEG date in the address file)  
 - `END` (set to the first day of the month corresponding to the original END date in the address file)
 - `address`
+- `TN_flag` (flag indicating whether the address is located in Tennessee)
 
 **Infant cohort** 
 
-| recip | TN_DOB     | BEG        | END        | address                                |
-|-------|------------|------------|------------|----------------------------------------|
-| 1     | 2010-10-14 | 2010-10-01 | 2010-10-01 | 2600 Hillsboro Pike Nashville TN 37212 |
-| 1     | 2010-10-14 | 2011-12-01 | 2011-12-01 | 2600 Hillsboro Pike Nashville TN 37212 |
-| 2     | 2022-01-06 | 2022-01-01 | 2022-04-01 | 2600 Hillsboro Pike Nashville TN 37212 |
+| recip | TN_DOB     | BEG        | END        | address                                | TN_flag |
+|-------|------------|------------|------------|----------------------------------------|---------|
+| 1     | 2010-10-14 | 2010-10-01 | 2010-10-01 | 2600 Hillsboro Pike Nashville TN 37212 | 1       |
+| 1     | 2010-10-14 | 2011-12-01 | 2011-12-01 | 2600 Hillsboro Pike Nashville TN 37212 | 1       |
+| 2     | 2022-01-06 | 2022-01-01 | 2022-04-01 | 2600 Hillsboro Pike Nashville TN 37212 | 1       |
 
 - `recip`  
 - `TN_DOB` (Year-Month-Day)  
 - `BEG` (set to the first day of the month corresponding to the original BEG date in the address file)  
 - `END` (set to the first day of the month corresponding to the original END date in the address file)  
 - `address`  
+- `TN_flag` (flag indicating whether the address is located in Tennessee)
 
 **Child cohort**
 
-| recip | TN_DOB     | BEG        | END        | address                                |
-|-------|------------|------------|------------|----------------------------------------|
-| 1     | 2010-10-14 | 2010-10-01 | 2010-10-01 | 2600 Hillsboro Pike Nashville TN 37212 |
-| 1     | 2010-10-14 | 2011-12-01 | 2011-12-01 | 2600 Hillsboro Pike Nashville TN 37212 |
-| 2     | 2022-01-06 | 2022-01-01 | 2022-04-01 | 2600 Hillsboro Pike Nashville TN 37212 |
+| recip | TN_DOB     | BEG        | END        | address                                | TN_flag |
+|-------|------------|------------|------------|----------------------------------------|---------|
+| 1     | 2010-10-14 | 2010-10-01 | 2010-10-01 | 2600 Hillsboro Pike Nashville TN 37212 | 1       |
+| 1     | 2010-10-14 | 2011-12-01 | 2011-12-01 | 2600 Hillsboro Pike Nashville TN 37212 | 1       |
+| 2     | 2022-01-06 | 2022-01-01 | 2022-04-01 | 2600 Hillsboro Pike Nashville TN 37212 | 1       |
 
 - `recip`  
 - `TN_DOB` (Year-Month-Day)  
 - `BEG` (set to the first day of the month corresponding to the original BEG date in the address file)  
 - `END` (set to the first day of the month corresponding to the original END date in the address file)  
 - `address`  
+- `TN_flag` (flag indicating whether the address is located in Tennessee)
 
 ### 1. Configure paths
 
