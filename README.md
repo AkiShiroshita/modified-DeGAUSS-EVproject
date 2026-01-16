@@ -91,7 +91,10 @@ Each pipeline consists of the following steps:
     - `R/final_clean_infant.R` (infant cohort).
     - `R/final_clean_child.R` (child cohort).
     - Performs final data cleaning and removes PHI (Protected Health Information).
-    
+
+### Data folder
+Download the original and/or processed environmental data from (here)[https://vanderbilt.box.com/s/m3l5bfe8gwfqhrqj1apbalbje5n8gf1b]
+
 ## Setup
 
 ### Initial setup
