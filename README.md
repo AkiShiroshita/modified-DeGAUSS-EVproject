@@ -93,7 +93,7 @@ Each pipeline consists of the following steps:
     - Performs final data cleaning and removes PHI (Protected Health Information).
 
 ### Data folder
-Download the original and/or processed environmental data from (here)[https://vanderbilt.box.com/s/m3l5bfe8gwfqhrqj1apbalbje5n8gf1b]
+Download the original and/or processed environmental data from [here](https://vanderbilt.box.com/s/m3l5bfe8gwfqhrqj1apbalbje5n8gf1b) (my invitation is required).
 
 ## Setup
 
