@@ -58,6 +58,12 @@ d <- d[exposure_start_date <= END & exposure_end_date >= BEG]
 
 setorder(d, recip, BEG, END) 
 
+# Removing children who moved out of TN
+# Study is limited to Tennessee residents
+d_tn_out <- d[flag_for_TN == 0 | is.na(flag_for_TN)] 
+ids_tn_out <- distinct(d_tn_out, recip) %>% pull(recip)
+d <- d[!recip %in% ids_tn_out]
+
 # Save file ---------------------------------------------------------------
 
 # Save cleaned data in fast binary format (fst) and CSV format

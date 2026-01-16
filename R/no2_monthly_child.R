@@ -9,8 +9,7 @@
 # NO2 ---------------------------------------------------------------------
 
 # Set up parallel processing
-core <- 24
-future::plan(multisession, workers = core, gc = TRUE)  # to use multiple cores explicitly
+future::plan(multisession, workers = 24, gc = TRUE)  # to use multiple cores explicitly
 
 # Load geocoded and cleaned address data
 d <- fst::read_fst(paste0(temp_folder, '/', 'temp_geocoded_cleaned.fst'), as.data.table = TRUE)

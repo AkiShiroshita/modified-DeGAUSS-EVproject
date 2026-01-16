@@ -24,7 +24,7 @@ setDT(d)
 # Tracks number of records (n), unique mothers (unique_n), and unique children (unique_child_n)
 track <- tibble(
   status = c("Before address cleaning", "After address cleaning",
-             "After geocoding", "After removing imprecise geocoding", "After removing mothers who moved out of TN"),
+             "After geocoding", "After removing imprecise geocoding"),
   n = NA_integer_,
   unique_n = NA_integer_,
   unique_child_n = NA_integer_
@@ -61,11 +61,9 @@ start_geocoder_container2()
 
 # Geocoding in parallel
 # Set number of CPU cores to use for parallel processing
-core <- 24
-
 # Set up parallel processing plan (use multisession for local parallelism)
 # multisession creates multiple R sessions on the same machine
-future::plan(multisession, workers = core, gc = TRUE)  # to use multiple cores explicitly
+future::plan(multisession, workers = 24, gc = TRUE)  # to use multiple cores explicitly
 
 # Geocode all addresses in parallel with progress bar
 # Add row index to track original row order
@@ -120,18 +118,6 @@ d <- d[score>=0.5]
 track$n[track$status == "After removing imprecise geocoding"] <- nrow(d)
 track$unique_n[track$status == "After removing imprecise geocoding"] <- nrow(distinct(d, mrecip))
 track$unique_child_n[track$status == "After removing imprecise geocoding"] <- nrow(distinct(d, recip))
-
-# Removing mothers who moved out of TN
-# Study is limited to Tennessee residents
-# Identify mothers with any address outside TN
-d_tn_out <- d[state != "TN"] # this approach is not perfect, as states may have missing value after geocoding
-ids_tn_out <- distinct(d_tn_out, recip) %>% pull(recip)
-# Remove all records for mothers who moved out of TN
-d <- d[!recip %in% ids_tn_out]
-
-track$n[track$status == "After removing mothers who moved out of TN"] <- nrow(d)
-track$unique_n[track$status == "After removing mothers who moved out of TN"] <- nrow(distinct(d, mrecip))
-track$unique_child_n[track$status == "After removing mothers who moved out of TN"] <- nrow(distinct(d, recip))
 
 # Cleaning exposure periods
 # Resolve gaps and overlaps in address history to create continuous time spans
