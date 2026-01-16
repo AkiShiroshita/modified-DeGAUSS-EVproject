@@ -32,7 +32,7 @@ d_nested <- st_as_sf(d_nested, coords = c('lon', 'lat'), crs = 4326) |> st_trans
 
 ## Look-up grid cells
 # Load BC grid cells (pre-computed BC concentration grid)
-d_grid <- sf::st_read('data/bc/grid_bc.gpkg') |> sf::st_transform(crs = 5072)
+d_grid <- sf::st_read('data/bc_monthly/grid_bc.gpkg') |> sf::st_transform(crs = 5072)
 
 # Find nearest grid cell for each address location
 nearest_index <- st_nearest_feature(d_nested, d_grid)

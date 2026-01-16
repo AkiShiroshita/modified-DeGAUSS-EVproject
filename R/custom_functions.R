@@ -387,7 +387,7 @@ get_no2 <- function(start_date, end_date, idx){
                                  idx = idx) |> 
     mutate(year = as.character(year(date)), 
            month = as.character(sprintf("%02d", as.numeric(month(date)))),
-           file_name = paste0("data/no2_schwartz/", year, "-", month, ".fst")) |>  # Add leading zero if needed
+           file_name = paste0("data/no2_schwartz_daily/", year, "-", month, ".fst")) |>  # Add leading zero if needed
     data.table::as.data.table(key = c('idx', 'date'))
   
   # Split by filename to read each monthly file once
@@ -445,7 +445,7 @@ get_bc <- function(start_date, end_date, idx){
            month = as.character(sprintf("%02d", as.numeric(month(date)))),
            date = as.integer(paste0(year, month)),  # Convert to YYYYMM integer format
            #date = format(date, "%Y-%m"),
-           file_name = paste0("data/bc/", year, month, ".fst")) |>  # Add leading zero if needed
+           file_name = paste0("data/bc_monthly/", year, month, ".fst")) |>  # Add leading zero if needed
     as.data.table(key = c('idx', 'date'))
   
   # Split by filename to read each monthly file once

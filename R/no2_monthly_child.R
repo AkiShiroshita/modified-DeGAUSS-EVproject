@@ -32,7 +32,7 @@ d_nested <- st_as_sf(d_nested, coords = c('lon', 'lat'), crs = 4326) |> st_trans
 
 ## Look-up grid cells
 # Load NO2 grid cells (pre-computed NO2 concentration grid)
-d_grid <- sf::st_read('data/no2_schwartz/grid.gpkg') |> st_transform(crs = 5072)
+d_grid <- sf::st_read('data/no2_schwartz_monthly/grid.gpkg') |> st_transform(crs = 5072)
 # Find nearest grid cell for each address location
 nearest_index <- sf::st_nearest_feature(d_nested, d_grid)
 
