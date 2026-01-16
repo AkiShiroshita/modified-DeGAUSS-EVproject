@@ -61,6 +61,7 @@ setorder(d, recip, BEG, END)
 # Study is limited to Tennessee residents
 d_tn_out <- d[flag_for_TN == 0 | is.na(flag_for_TN)] 
 ids_tn_out <- distinct(d_tn_out, recip) %>% pull(recip)
+cat("Number of children who moved out of TN: ", length(ids_tn_out))
 d <- d[!recip %in% ids_tn_out]
 
 # Save file ---------------------------------------------------------------

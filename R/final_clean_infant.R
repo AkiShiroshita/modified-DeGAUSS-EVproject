@@ -59,7 +59,7 @@ combined_data <- cbind(combined_data, d_location)
 # Includes: identifiers, dates, relocation, census boundaries, redlining,
 # road proximity, road density, greenspace, and deprivation indices
 # Note: Traffic density variables (AADT) are commented out but available if needed
-columns_to_select <- c("recip", "start_date", "end_date", "relocation", "city",
+columns_to_select <- c("recip", "start_date", "end_date", "relocation", "geocoded", "city",
                        "county_fips2010","county_fips2020",
                        "census_block_group_id_2010", "census_block_group_id_2020",
                        "census_tract_id_2010", "census_tract_id_2020",

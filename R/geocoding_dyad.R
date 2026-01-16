@@ -129,6 +129,7 @@ d |> fst::write_fst(paste0(temp_folder, '/', 'temp_geocoded_cleaned.fst'), compr
 # Group all records by unique lat/lon coordinates
 # This reduces data size and speeds up spatial operations
 d <- fst::read_fst(paste0(temp_folder, '/', 'temp_geocoded_cleaned.fst'), as.data.table = TRUE)
+d$geocoded <- 1
 
 # Save tracking table
 track |> readr::write_csv(paste0(output_folder, '/', 'track.csv'))

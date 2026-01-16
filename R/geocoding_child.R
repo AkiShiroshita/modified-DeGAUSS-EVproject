@@ -121,6 +121,7 @@ d |> fst::write_fst(paste0(temp_folder, '/', 'temp_geocoded_cleaned.fst'), compr
 # Nest data by location
 # Group all records by unique lat/lon coordinates
 d <- fst::read_fst(paste0(temp_folder, '/', 'temp_geocoded_cleaned.fst'), as.data.table = TRUE)
+d$geocoded <- 1
 
 # Save tracking table
 track |> readr::write_csv(paste0(output_folder, '/', 'track.csv'))
