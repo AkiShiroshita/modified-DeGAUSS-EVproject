@@ -102,7 +102,7 @@ checkErrorMessage <- function(errorMessage) {
   # Check if the error message contains specific substrings
   if (grepl("the container name \"gs\" is already in use", errorMessage) ||
       grepl("the container name \"gs2\" is already in use", errorMessage)) {
-    return("You already have the necessary environment! Please go to the next setp.")
+    return("You already have the necessary environment! Please go to the next step.")
   } else {
     return(paste("Error: ", errorMessage))
   }
