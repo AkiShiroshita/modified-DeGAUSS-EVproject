@@ -1,4 +1,4 @@
-## Modified DeGAUSS – Environmental Exposure Assessment Pipeline (**Under Construction**)
+## Modified DeGAUSS – Environmental Exposure Assessment Pipeline
 
 ### Overview
 
