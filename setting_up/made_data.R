@@ -469,10 +469,36 @@ invisible(pblapply(
   }
 ))
 
+# S1200 secondary roads (TN + neighbors, 2011) ------------------------------
+# Same MTFCC and vintage as roads1200_projected_2011; adds adjacent-state S1200
+# segments within 5 km of the TN border for cross-boundary proximity analyses
 
+# Tennessee state boundary; transform to Albers Equal Area (CRS 5072) for distance calculations
+tn_boundary <- states(year = 2020) %>%
+  filter(STATEFP == "47") %>%
+  st_as_sf() %>%
+  st_transform(crs = 5072)
 
+# Buffer TN by 5 km to retain near-border roads in neighboring states
+tn_buffer <- st_buffer(tn_boundary, 5000)
 
+# US states in CRS 5072
+all_states <- states(year = 2020) %>% st_as_sf() %>% st_transform(crs = 5072)
 
+# States that touch TN (exclude TN); FIPS list drives per-state road downloads
+neighbor_states <- all_states %>%
+  filter(STATEFP != "47") %>%
+  st_filter(tn_boundary, .predicate = st_touches)
+target_states <- c("47", neighbor_states$STATEFP)
 
+# Per state: primary_secondary_roads (2011), project to 5072, filter to S1200 (MTFCC == "S1200")
+roads_s1200 <- lapply(target_states, function(stfp) {
+  roads <- primary_secondary_roads(state = stfp, year = 2011)
+  st_transform(roads, 5072) %>% filter(MTFCC == "S1200")
+}) %>% bind_rows()
 
+# Keep features intersecting the TN buffer
+roads_s1200_buffer <- roads_s1200[st_intersects(roads_s1200, tn_buffer, sparse = FALSE), ]
 
+# Save extended S1200 layer
+roads_s1200_buffer |> write_rds('data/roads1200_projected_with_neighbors.rds', compress = 'gz')
