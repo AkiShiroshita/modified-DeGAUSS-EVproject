@@ -2,7 +2,7 @@
 # Traffic Density (AADT) Assessment
 # ============================================================================
 # This script calculates traffic density metrics using Annual Average Daily
-# Traffic (AADT) data within 400m buffers around each address.
+# Traffic (AADT) data within 500m buffers around each address.
 # AADT measures the average number of vehicles per day on a road segment.
 # Metrics include road length, vehicle-meters, and truck-meters by traffic type
 # (moving traffic: interstates/freeways vs stop-go traffic: arterials).
@@ -16,10 +16,8 @@ d <- read_rds(paste0(temp_folder, '/', 'temp_geocoded_census_road_greenspace_dep
 # Add buffer index to track each address location
 d$buffer_index <- 1:nrow(d) 
 
-# Load AADT (Annual Average Daily Traffic) data for Tennessee (2017)
-traffic_volume <- read_rds('data/Tennessee2017AADT.rds') |>
-  st_zm() # Drop M dimension (remove measure dimension if present)
-traffic_volume$geometry <- st_cast(traffic_volume$geometry, "MULTILINESTRING") # for AADT 2014
+# Load AADT (Annual Average Daily Traffic) data for Tennessee (2014)
+traffic_volume <- read_rds('data/Tennessee2014AADT.rds')
 setDT(traffic_volume)
 
 # Filter to major road types only
@@ -28,9 +26,7 @@ road_types_to_keep <- c('Interstate', 'Principal Arterial - Other Freeways and E
                         'Principal Arterial - Other', 'Minor Arterial')
 
 # Filter traffic volume data to selected road types
-# Remove state and county FIPS codes (not needed)
-traffic_volume <- st_as_sf(traffic_volume[road_type %in% road_types_to_keep, 
-                                          -c("state_fips", "county_fips")])
+traffic_volume <- st_as_sf(traffic_volume[road_type %in% road_types_to_keep])
 
 # Create a 500m radius buffer around each address
 # This buffer captures nearby traffic exposure

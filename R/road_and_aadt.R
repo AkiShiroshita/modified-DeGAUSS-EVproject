@@ -14,9 +14,7 @@ d <- readr::read_rds(paste0(temp_folder, '/', 'temp_geocoded_census_road_greensp
   sf::st_as_sf()
 
 # Load AADT data for finding nearest high-traffic road
-traffic_volume <- readr::read_rds('data/Tennessee2017AADT.rds') |>
-  st_zm() # Drop M dimension
-traffic_volume$geometry <- st_cast(traffic_volume$geometry, "MULTILINESTRING") # for AADT 2014
+traffic_volume <- readr::read_rds('data/Tennessee2014AADT.rds') 
 setDT(traffic_volume)
 
 # Filter to only highest-traffic road types (interstates and freeways)
@@ -25,8 +23,7 @@ road_types_to_keep <- c('Interstate', 'Principal Arterial - Other Freeways and E
 
 # Filter to high-traffic roads only (AADT > 0)
 # Note: Could also filter by truck AADT if needed
-traffic_volume <- sf::st_as_sf(traffic_volume[road_type %in% road_types_to_keep & aadt >0, # aadt > 0 | aadt_single_unit > 0 | aadt_combination > 0
-                                              -c("state_fips", "county_fips")])
+traffic_volume <- sf::st_as_sf(traffic_volume[road_type %in% road_types_to_keep & aadt >0])
 
 # Find the nearest high-traffic road segment for each address
 nearest_index <- sf::st_nearest_feature(d, traffic_volume)

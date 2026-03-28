@@ -294,6 +294,11 @@ tmp <- tmp %>%
 
 tmp <- st_transform(tmp, 5072)
 
+tmp <- tmp |>
+  st_zm() |> 
+  group_by(road_type, route_id, aadt, aadt_single_unit, aadt_combination) |>
+  summarize(geometry = st_union(geometry), .groups = "drop")
+
 # Save 2014 AADT data
 tmp |> write_rds('data/Tennessee2014AADT.rds', compress = 'gz')
 
@@ -502,3 +507,56 @@ roads_s1200_buffer <- roads_s1200[st_intersects(roads_s1200, tn_buffer, sparse =
 
 # Save extended S1200 layer
 roads_s1200_buffer |> write_rds('data/roads1200_projected_with_neighbors.rds', compress = 'gz')
+
+
+# S1400 minor roads (TN + neighbors, 2011) ------------------------------
+# Same MTFCC and vintage as roads1400_projected above; adds adjacent-state S1400
+# segments within 5 km of the TN border (per-county roads() download, 2011 TIGER)
+
+# Tennessee state boundary; transform to Albers Equal Area (CRS 5072) for distance calculations
+tn_boundary <- states(year = 2020) %>%
+  filter(STATEFP == "47") %>%
+  st_as_sf() %>%
+  st_transform(crs = 5072)
+
+# Buffer TN by 5 km to retain near-border roads in neighboring states
+tn_buffer <- st_buffer(tn_boundary, 5000)
+
+# US states in CRS 5072
+all_states <- states(year = 2020) %>%
+  st_as_sf() %>%
+  st_transform(crs = 5072)
+
+# States that touch TN (exclude TN); FIPS list drives per-state, per-county downloads
+neighbor_states <- all_states %>%
+  filter(STATEFP != "47") %>%
+  st_filter(tn_boundary, .predicate = st_touches)
+target_states <- c("47", neighbor_states$STATEFP)
+
+# Per state: list counties (2020 county polygons for FIPS), then pull 2011 roads by county
+# S1400 = local / minor streets (MTFCC "S1400"); skip counties that error on download
+roads_s1400 <- map_dfr(target_states, function(stfp) {
+  ctys <- counties(state = stfp, year = 2020)
+
+  map_dfr(ctys$COUNTYFP, function(ctyfp) {
+    message("Processing state: ", stfp, " county: ", ctyfp)
+
+    tryCatch({
+      roads(state = stfp, county = ctyfp, year = 2011) %>%
+        st_transform(5072) %>%
+        filter(MTFCC == "S1400")
+    }, error = function(e) {
+      message("Skipped: ", stfp, "-", ctyfp)
+      return(NULL)
+    })
+  })
+})
+
+# Keep features intersecting the TN buffer
+roads_s1400_buffer <- roads_s1400[
+  st_intersects(roads_s1400, tn_buffer, sparse = FALSE),
+]
+
+# Save extended S1400 layer
+roads_s1400_buffer |>
+  write_rds('data/roads1400_projected_with_neighbors.rds', compress = 'gz')
