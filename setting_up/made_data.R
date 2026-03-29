@@ -620,17 +620,15 @@ process_state <- function(folder, tn_buffer) {
   # Keep only road fragments inside the TN buffer (includes TN and near-border out-of-state mileage)
   tmp <- st_intersection(tmp, tn_buffer)
 
-  # One multilinestring per route / AADT group (same pattern as Tennessee2014AADT)
-  tmp <- tmp %>%
-    group_by(road_type, route_id, aadt, aadt_single_unit, aadt_combination) %>%
-    summarize(geometry = st_union(geometry), .groups = "drop")
-
   return(tmp)
 }
 
 # Stack all states (sf rows bind with bind_rows)
 all_roads <- map(states_folders, ~ process_state(.x, tn_buffer)) %>%
-  bind_rows()
+  bind_rows() |> 
+  # One multilinestring per route / AADT group
+  group_by(road_type, route_id, aadt, aadt_single_unit, aadt_combination) %>%
+  summarize(geometry = st_union(geometry), .groups = "drop")
 
 # Save combined multi-state 2014 AADT layer
 all_roads |>
