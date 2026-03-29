@@ -40,7 +40,8 @@ pacman::p_load(
   "exactextractr",
   "fst",
   "OfflineGeocodeR",
-  "dht"
+  "dht",
+  "tigris"
 )
 
 # Census data------------------------------------------------------------------
@@ -560,3 +561,77 @@ roads_s1400_buffer <- roads_s1400[
 # Save extended S1400 layer
 roads_s1400_buffer |>
   write_rds('data/roads1400_projected_with_neighbors.rds', compress = 'gz')
+
+# Traffic density (TN + neighbors, 2014) ------------------------------
+# HPMS 2014 shapefiles placed under data/<state>2014/ (manual download per state)
+# Same F_System labels and column naming as the Tennessee-only 2014 block above; clips
+# segments to a 5 km buffer around TN for cross-border AADT proximity analyses
+
+# Tennessee state boundary; drop Z/M, union parts, then Albers Equal Area (CRS 5072)
+tn_boundary <- states(year = 2020) %>%
+  filter(STATEFP == "47") %>%
+  st_as_sf() %>%
+  st_transform(crs = 5072) %>%
+  st_zm() %>%
+  st_union()
+
+# Buffer TN by 5 km to retain HPMS segments in neighboring states near the border
+tn_buffer <- st_buffer(tn_boundary, 5000)
+
+# One folder per state (Tennessee plus states adjacent to TN); each contains that state's 2014 HPMS shapefile
+states_folders <- c(
+  "data/tennessee2014",
+  "data/kentucky2014",
+  "data/virginia2014",
+  "data/northcarolina2014",
+  "data/georgia2014",
+  "data/alabama2014",
+  "data/mississippi2014",
+  "data/arkansas2014",
+  "data/missouri2014"
+)
+
+# Read one state's 2014 HPMS roads, harmonize columns, clip to TN buffer, union by route attributes
+process_state <- function(folder, tn_buffer) {
+  shp_file <- list.files(folder, pattern = "\\.shp$", full.names = TRUE)
+  tmp <- read_sf(shp_file) %>% st_transform(5072) %>% st_zm()
+
+  tmp <- tmp %>%
+    dplyr::select(state_fips = state_code,
+                  route_id = route_id,
+                  road_type = f_system,
+                  county_fips = county_cod,
+                  aadt = aadt,
+                  aadt_single_unit = aadt_singl,
+                  aadt_combination = aadt_combi)
+
+  # F_System to ordered factor (same levels as 2017/2014 blocks earlier in this script)
+  tmp <- tmp %>%
+    mutate(road_type = factor(road_type, levels = 1:7,
+                              labels = c("Interstate",
+                                         "Principal Arterial - Other Freeways and Expressways",
+                                         "Principal Arterial - Other",
+                                         "Minor Arterial",
+                                         "Major Collector",
+                                         "Minor Collector",
+                                         "Local"),
+                              ordered = TRUE))
+
+  # Keep only road fragments inside the TN buffer (includes TN and near-border out-of-state mileage)
+  tmp <- st_intersection(tmp, tn_buffer)
+
+  # One multilinestring per route / AADT group (same pattern as Tennessee2014AADT)
+  tmp <- tmp %>%
+    group_by(road_type, route_id, aadt, aadt_single_unit, aadt_combination) %>%
+    summarize(geometry = st_union(geometry), .groups = "drop")
+
+  return(tmp)
+}
+
+# Stack all states (sf rows bind with bind_rows)
+all_roads <- map(states_folders, ~ process_state(.x, tn_buffer)) %>%
+  bind_rows()
+
+# Save combined multi-state 2014 AADT layer
+all_roads |>
+  write_rds("data/Tennessee_neighbor_2014AADT.rds", compress = "gz")
