@@ -13,34 +13,34 @@
 # If you would like to create a temporary folder in a different location to store intermediate files containing PHI, please specify the path.
 
 # ver 1
-input_folder <- "W:/Data/Tan/subset"
+input_folder <- "Z:/Data/Tan/subset"
 input_file <- "ev_dyad_1.csv"
-output_folder <- "Y:/modified_degauss/dyad_cohort_1"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_dyad1"
+output_folder <- "X:/modified_degauss/dyad_cohort_1"
+temp_folder <-   "Z:/Data/Tan/temp/temp_degauss_dyad1"
 
 # ver 2
-input_folder <- "W:/Data/Tan/subset"
+input_folder <- "Z:/Data/Tan/subset"
 input_file <- "ev_dyad_2.csv"
-output_folder <- "Y:/modified_degauss/dyad_cohort_2"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_dyad2"
+output_folder <- "X:/modified_degauss/dyad_cohort_2"
+temp_folder <-   "Z:/Data/Tan/temp/temp_degauss_dyad2"
 
 # ver 3
-input_folder <- "W:/Data/Tan/subset"
+input_folder <- "Z:/Data/Tan/subset"
 input_file <- "ev_dyad_3.csv"
-output_folder <- "Y:/modified_degauss/dyad_cohort_3"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_dyad3"
+output_folder <- "X:/modified_degauss/dyad_cohort_3"
+temp_folder <-   "Z:/Data/Tan/temp/temp_degauss_dyad3"
 
 # ver 4
-input_folder <- "W:/Data/Tan/subset"
+input_folder <- "Z:/Data/Tan/subset"
 input_file <- "ev_dyad_4.csv"
-output_folder <- "Y:/modified_degauss/dyad_cohort_4"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_dyad4"
+output_folder <- "X:/modified_degauss/dyad_cohort_4"
+temp_folder <-   "Z:/Data/Tan/temp/temp_degauss_dyad4"
 
 # ver 5
-input_folder <- "W:/Data/Tan/subset"
+input_folder <- "Z:/Data/Tan/subset"
 input_file <- "ev_dyad_5.csv"
-output_folder <- "Y:/modified_degauss/dyad_cohort_5"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_dyad5"
+output_folder <- "X:/modified_degauss/dyad_cohort_5"
+temp_folder <-   "Z:/Data/Tan/temp/temp_degauss_dyad5"
 
 ##############################################################
 # Execute this script from the next section all at once!! ####

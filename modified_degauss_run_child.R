@@ -13,40 +13,40 @@
 # If you would like to create a temporary folder in a different location to store intermediate files containing PHI, please specify the path.
 
 # ver 21
-input_folder <- "W:/Data/Tan/subset"
+input_folder <- "Z:/Data/Tan/subset"
 input_file <- "ev_address_1.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_21"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child21"
+output_folder <- "X:/modified_degauss/child_cohort_21"
+temp_folder <-   "Z:/Data/Tan/temp/temp_degauss_child21"
 
 # ver 22
-input_folder <- "W:/Data/Tan/subset"
+input_folder <- "Z:/Data/Tan/subset"
 input_file <- "ev_address_2.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_22"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child22"
+output_folder <- "X:/modified_degauss/child_cohort_22"
+temp_folder <-   "Z:/Data/Tan/temp/temp_degauss_child22"
 
 # ver 23
-input_folder <- "W:/Data/Tan/subset"
+input_folder <- "Z:/Data/Tan/subset"
 input_file <- "ev_address_3.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_23"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child23"
+output_folder <- "X:/modified_degauss/child_cohort_23"
+temp_folder <-   "Z:/Data/Tan/temp/temp_degauss_child23"
 
 # ver 24
-input_folder <- "W:/Data/Tan/subset"
+input_folder <- "Z:/Data/Tan/subset"
 input_file <- "ev_address_4.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_24"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child24"
+output_folder <- "X:/modified_degauss/child_cohort_24"
+temp_folder <-   "Z:/Data/Tan/temp/temp_degauss_child24"
 
 # ver 25
-input_folder <- "W:/Data/Tan/subset"
+input_folder <- "Z:/Data/Tan/subset"
 input_file <- "ev_address_5.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_25"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child25"
+output_folder <- "X:/modified_degauss/child_cohort_25"
+temp_folder <-   "Z:/Data/Tan/temp/temp_degauss_child25"
 
 # ver 26
-input_folder <- "W:/Data/Tan/subset"
+input_folder <- "Z:/Data/Tan/subset"
 input_file <- "ev_address_6.csv"
-output_folder <- "Y:/modified_degauss/child_cohort_26"
-temp_folder <-   "W:/Data/Tan/temp/temp_degauss_child26"
+output_folder <- "X:/modified_degauss/child_cohort_26"
+temp_folder <-   "Z:/Data/Tan/temp/temp_degauss_child26"
 
 ##############################################################
 # Execute this script from the next section ####

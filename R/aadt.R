@@ -18,6 +18,7 @@ d$buffer_index <- 1:nrow(d)
 
 # Load AADT (Annual Average Daily Traffic) data for Tennessee (2014)
 traffic_volume <- read_rds('data/Tennessee2014AADT.rds')
+traffic_volume$geometry <- st_cast(traffic_volume$geometry, "MULTILINESTRING")
 setDT(traffic_volume)
 
 # Filter to major road types only

@@ -15,6 +15,7 @@ d <- readr::read_rds(paste0(temp_folder, '/', 'temp_geocoded_census_road_greensp
 
 # Load AADT data for finding nearest high-traffic road
 traffic_volume <- readr::read_rds('data/Tennessee2014AADT.rds') 
+traffic_volume$geometry <- st_cast(traffic_volume$geometry, "MULTILINESTRING") # for AADT 2014
 setDT(traffic_volume)
 
 # Filter to only highest-traffic road types (interstates and freeways)

@@ -13,7 +13,7 @@
 # Combines data from multiple batches and prepares final analysis dataset
 
 # Define temporary folder and file paths for multiple batches
-temp_folder <-   "W:/Data/Tan/temp/"
+temp_folder <-   "Z:/Data/Tan/temp"
 files <- paste0(temp_folder, "/temp_degauss_child", 1:6, "/temp_geocoded_census_road_greenspace_dep_road_density.rds")
 
 # Combine data from all batches
@@ -80,7 +80,7 @@ combined_data_selected <- combined_data[, ..columns_to_select]
 
 # Save final environmental exposure data (long format: one row per address period)
 # Change the directory as needed
-combined_data_selected |> readr::write_csv("Y:/data/modified_degauss/env_data_long_infant.csv")
+combined_data_selected |> readr::write_csv("X:/data/modified_degauss/env_data_long_infant.csv")
 
 #rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv) # Remove all objects from the environment
 #gc() # Trigger garbage collection to free up memory
@@ -89,7 +89,7 @@ combined_data_selected |> readr::write_csv("Y:/data/modified_degauss/env_data_lo
 # Final cleaning (NO2) ---------------------------------------------------------
 # Combines NO2 exposure summaries from multiple batches
 
-temp_folder <-   "W:/Data/Tan/temp/"
+temp_folder <-   "Z:/Data/Tan/temp"
 files <- paste0(temp_folder, "/temp_degauss_child", 1:6, "/d_no2_summary.rds")
 
 # Combine NO2 summaries from all batches
@@ -100,7 +100,7 @@ setorder(combined_data, recip)
 
 # Save final NO2 summary data (one row per child: average NO2 exposure)
 # Change the directory as needed
-combined_data |> readr::write_csv("Y:/data/modified_degauss/no2_summary_infant.csv")
+combined_data |> readr::write_csv("X:/data/modified_degauss/no2_summary_infant.csv")
 
 #rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv) # Remove all objects from the environment
 #gc() # Trigger garbage collection to free up memory
@@ -109,7 +109,7 @@ combined_data |> readr::write_csv("Y:/data/modified_degauss/no2_summary_infant.c
 # Final cleaning (BC) ---------------------------------------------------------
 # Combines black carbon exposure summaries from multiple batches
 
-temp_folder <-   "W:/Data/Tan/temp/"
+temp_folder <-   "Z:/Data/Tan/temp"
 files <- paste0(temp_folder, "/temp_degauss_child", 1:6, "/d_bc_summary.rds")
 
 # Combine BC summaries from all batches
@@ -120,7 +120,7 @@ setorder(combined_data, recip)
 
 # Save final BC summary data (one row per child: average BC exposure)
 # Change the directory as needed
-combined_data |> readr::write_csv("Y:/data/modified_degauss/bc_summary_infant.csv")
+combined_data |> readr::write_csv("X:/data/modified_degauss/bc_summary_infant.csv")
 
 #rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv) # Remove all objects from the environment
 #gc() # Trigger garbage collection to free up memory
@@ -129,7 +129,7 @@ combined_data |> readr::write_csv("Y:/data/modified_degauss/bc_summary_infant.cs
 # Deprivation index -------------------------------------------------------
 # # Combines deprivation index data from multiple batches for Britt's project
 
-temp_folder <-   "W:/Data/Tan/temp/"
+temp_folder <-   "Z:/Data/Tan/temp"
 files <- paste0(temp_folder, "/temp_degauss_child", 1:6, "/temp_geocoded_deprivation_britt_ruca.fst")
 
 # Combine deprivation index data from all batches
@@ -180,11 +180,11 @@ combined_data_britt <- combined_data %>%
                starts_with("nses_"), # Neighborhood Socioeconomic Status
                starts_with("sdi_"),  # Social Deprivation Index
                starts_with("eqi_"),  # Environmental Quality Index
-               ruca,                 # Rural-Urban Commuting Area code
+               ruca_urban_rural,     # Rural-Urban Commuting Area code
                redlining,            # Historical redlining grade
                relocation,           # Relocation indicator
  ) 
 
-# # Save final deprivation index data (long format: one row per address period)
-# #combined_data_britt %>% write_csv("Y:/Britt_preliminary_data/preliminary_analysis_data/deprivation_index_long.csv")
-# combined_data_britt %>% write_csv("Y:/data/modified_degauss/deprivation_index_long_infant.csv")
+# Save final deprivation index data (long format: one row per address period)
+combined_data_britt %>% write_csv("X:/Britt_preliminary_data/preliminary_analysis_data/deprivation_index_long_infant.csv")
+combined_data_britt %>% write_csv("X:/data/modified_degauss/deprivation_index_long_infant.csv")

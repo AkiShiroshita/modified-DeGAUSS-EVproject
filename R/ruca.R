@@ -41,6 +41,8 @@ ruca <- ruca %>%
   )
 
 # Attach RUCA fields (codes + Urban/Rural) by ZIP code
+ruca <- ruca %>% mutate(across(everything(), as.character))
+ruca <- as.data.table(ruca)
 d <- ruca[d, on = 'zip']
 
 # Save with RUCA appended for downstream exposure or analysis steps
