@@ -132,6 +132,27 @@ combined_data |> readr::write_csv("X:/data/modified_degauss/bc_summary_dyad.csv"
 #gc() # Trigger garbage collection to free up memory
 #if (rstudioapi::isAvailable()) rstudioapi::restartSession() # restart R studio to completely remove any cache
 
+# Final cleaning (Biomass-specific BC) ---------------------------------------------------------
+# Combines black carbon exposure summaries from multiple batches
+
+temp_folder <-   "Z:/Data/Tan/temp"
+files <- paste0(temp_folder, "/temp_degauss_dyad", 1:5, "/d_bc_biomass_summary.rds")
+
+# Combine BC summaries from all batches
+combined_data <- rbindlist(lapply(files, read_rds), use.names = TRUE, fill = TRUE)
+
+setDT(combined_data)
+setorder(combined_data, recip)
+
+# Save final BC summary data (one row per child: average BC exposure during pregnancy)
+# Change the directory as needed
+#combined_data |> readr::write_csv("X:/data/modified_degauss/bc_summary_infancy.csv")
+combined_data |> readr::write_csv("X:/data/modified_degauss/bc_biomass_summary_dyad.csv")
+
+#rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv) # Remove all objects from the environment
+#gc() # Trigger garbage collection to free up memory
+#if (rstudioapi::isAvailable()) rstudioapi::restartSession() # restart R studio to completely remove any cache
+
 # Deprivation index -------------------------------------------------------
 # Combines deprivation index data from multiple batches for Britt's project
 
