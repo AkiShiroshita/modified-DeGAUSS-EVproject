@@ -81,9 +81,15 @@ Each pipeline sources the scripts below in this exact order (see the `modified_d
     - Assigns average monthly NO₂ levels during the exposure period.
 
 11. **Black carbon (BC) exposure** (`R/bc_infant.R`, `R/bc_dyad.R`, or `R/bc_child.R`)
-    - Assigns average black carbon levels during the exposure period.
+    - Assigns average total black carbon levels during the exposure period using monthly grids in `data/bc_monthly/` and `get_bc()` in `R/custom_functions.R`.
 
-12. **Final cleaning**
+12. **Biomass-specific BC exposure** (`R/bc_biomass_infant.R`, `R/bc_biomass_dyad.R`, or `R/bc_biomass_child.R`)
+    - Assigns average biomass-combustion black carbon during the same exposure window, using monthly grids in `data/bc_monthly_biomass/` and `get_bc_biomass()` in `R/custom_functions.R`.
+    - Grid lookup: `data/bc_monthly/grid_bc_biomass.gpkg` (dyad and child) or `data/bc_monthly_biomass/grid_bc_biomass.gpkg` (infant).
+    - Per-batch intermediate output: `d_bc_biomass_summary.rds` in `temp_folder`.
+    - Summary variables: `average_bc_biomass_pregnancy` (dyad), `average_biomass_bc_infancy` (infant), `average_bc_biomass_childhood` (child).
+
+13. **Final cleaning**
     - `R/final_clean_dyad.R` (dyad cohort).
     - `R/final_clean_infant.R` (infant cohort).
     - `R/final_clean_child.R` (child cohort).
@@ -99,8 +105,15 @@ Optional / currently commented-out steps in the main scripts:
 - **Road proximity × traffic density** (`R/road_and_aadt.R`) – nearest high-traffic road distance plus its AADT, derived after the AADT step.
 - **Tabulation** (`R/tabulation_dyad.R`, `R/tabulation_infant.R`, `R/tabulation_child.R`) – summary tables.
 
+### Supporting R scripts
+
+- **`R/custom_functions.R`** – shared helpers loaded during initial setup, including `get_bc()` (total BC from `data/bc_monthly/`) and `get_bc_biomass()` (biomass BC from `data/bc_monthly_biomass/`).
+
 ### Data folder
+
 Download the original and/or processed environmental data from [here](https://vanderbilt.box.com/s/m3l5bfe8gwfqhrqj1apbalbje5n8gf1b) (an invitation is required).
+
+Biomass-specific BC monthly grids and the Tennessee grid GeoPackage are built with **`make_data/bc_biomass_make_data.R`** (Washington University ACAG Hybrid BC–Biomass product, clipped to Tennessee).
 
 ## Setup
 
@@ -260,7 +273,8 @@ Intermediate files (which may contain PHI) are saved to `temp_folder`.
 Per-cohort outputs written by the **Final cleaning** step:
 - `env_data_long_<cohort>.csv` – environmental exposures in long format (one row per address period), including census IDs, redlining, road proximity, road density, greenspace, and traffic-density metrics (`length_*`, `vehicle_meters_*`, `truck_meters_*` for `moving` and `stop_go`).
 - `no2_summary_<cohort>.csv` – one row per subject with the average NO₂ exposure during the exposure period.
-- `bc_summary_<cohort>.csv` – one row per subject with the average black carbon exposure during the exposure period.
+- `bc_summary_<cohort>.csv` – one row per subject with the average total black carbon exposure during the exposure period.
+- `bc_biomass_summary_<cohort>.csv` – one row per subject with the average biomass-specific black carbon exposure during the exposure period.
 - `deprivation_index_long_<cohort>.csv` – Britt's-project deprivation indices in long format (ADI / SVI / COI / EJI / CRE / DCI / NDI / NSES / SDI / EQI), plus `redlining` and `relocation` (and `ruca_urban_rural` for the infant cohort).
 
 ## Important notes

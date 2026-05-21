@@ -127,6 +127,13 @@ tictoc::tic("BC")
 source("R/bc_dyad.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
+# Biomass-specific BC ----------------------------------------------------------------------
+
+# should tweak my program!
+tictoc::tic("Biomass-specific BC")
+source("R/bc_biomass_dyad.R", echo = FALSE, print.eval = FALSE)
+tictoc::toc(log = TRUE)
+
 # Tabulation data ---------------------------------------------------------
 
 #tictoc::tic("Tabulation data")

@@ -458,3 +458,33 @@ get_bc <- function(start_date, end_date, idx){
                             .options = furrr_options(seed = TRUE)) |> 
     bind_rows() 
 }
+# Biomass-specific BC (Black Carbon) ----------------------------------------------------------------------
+# Functions for retrieving biomass-specific black carbon exposure estimates from pre-computed grids
+
+# Get monthly biomass-specific BC estimates for a date range and grid cell
+# Black carbon is a component of fine particulate matter from combustion sources
+# Input: start_date, end_date (Date objects), idx (grid cell index)
+# Output: data.table with monthly BC values for the specified period
+get_bc_biomass <- function(start_date, end_date, idx){
+  
+  # Create lookup table with all months in range and grid index
+  # Each row represents one month at one grid cell
+  .look_up <- tidyr::expand_grid(date = seq.Date(as.Date(start_date), as.Date(end_date), by = "month"),
+                                 idx = idx) %>% 
+    mutate(year = as.character(year(date)), 
+           month = as.character(sprintf("%02d", as.numeric(month(date)))),
+           date = as.integer(paste0(year, month)),  # Convert to YYYYMM integer format
+           #date = format(date, "%Y-%m"),
+           file_name = paste0("data/bc_monthly_biomass/", year, month, ".fst")) |>  # Add leading zero if needed
+    as.data.table(key = c('idx', 'date'))
+  
+  # Split by filename to read each monthly file once
+  .look_up_split <- split(.look_up, .look_up$file_name)
+  
+  # Read and merge BC data in parallel for each monthly file
+  .bc_average <- future_map(.look_up_split,
+                            ~read_and_merge(.x),
+                            .progress = TRUE,
+                            .options = furrr_options(seed = TRUE)) |> 
+    bind_rows() 
+}

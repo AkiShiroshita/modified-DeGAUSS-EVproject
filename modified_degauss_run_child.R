@@ -131,6 +131,12 @@ tictoc::tic("BC")
 source("R/bc_child.R", echo = FALSE, print.eval = FALSE)
 tictoc::toc(log = TRUE)
 
+# Biomass-specific BC ----------------------------------------------------------------------
+
+tictoc::tic("Biomass-specific BC")
+source("R/bc_biomass_child.R", echo = FALSE, print.eval = FALSE)
+tictoc::toc(log = TRUE)
+
 # Tabulation data ---------------------------------------------------------
 
 #tictoc::tic("Tabulation data")

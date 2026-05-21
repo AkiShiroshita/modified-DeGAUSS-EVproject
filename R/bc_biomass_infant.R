@@ -51,7 +51,7 @@ d[, `:=` (start_date = as.Date(parse_date_time(start_date, orders = c("y/m/d", "
 # Retrieve BC values for each exposure period
 # Uses monthly aggregated BC data
 d[, bc := furrr::future_pmap(list(start_date, end_date, idx),
-                             get_bc,
+                             get_bc_biomass,
                              .progress = TRUE,
                              .options = furrr_options(seed = TRUE))
 ]
