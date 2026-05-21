@@ -85,7 +85,7 @@ Each pipeline sources the scripts below in this exact order (see the `modified_d
 
 12. **Biomass-specific BC exposure** (`R/bc_biomass_infant.R`, `R/bc_biomass_dyad.R`, or `R/bc_biomass_child.R`)
     - Assigns average biomass-combustion black carbon during the same exposure window, using monthly grids in `data/bc_monthly_biomass/` and `get_bc_biomass()` in `R/custom_functions.R`.
-    - Grid lookup: `data/bc_monthly/grid_bc_biomass.gpkg` (dyad and child) or `data/bc_monthly_biomass/grid_bc_biomass.gpkg` (infant).
+    - Grid lookup (all cohorts): `data/bc_monthly_biomass/grid_bc_biomass.gpkg`.
     - Per-batch intermediate output: `d_bc_biomass_summary.rds` in `temp_folder`.
     - Summary variables: `average_bc_biomass_pregnancy` (dyad), `average_biomass_bc_infancy` (infant), `average_bc_biomass_childhood` (child).
 
