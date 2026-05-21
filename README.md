@@ -85,9 +85,6 @@ Each pipeline sources the scripts below in this exact order (see the `modified_d
 
 12. **Biomass-specific BC exposure** (`R/bc_biomass_infant.R`, `R/bc_biomass_dyad.R`, or `R/bc_biomass_child.R`)
     - Assigns average biomass-combustion black carbon during the same exposure window, using monthly grids in `data/bc_monthly_biomass/` and `get_bc_biomass()` in `R/custom_functions.R`.
-    - Grid lookup (all cohorts): `data/bc_monthly_biomass/grid_bc_biomass.gpkg`.
-    - Per-batch intermediate output: `d_bc_biomass_summary.rds` in `temp_folder`.
-    - Summary variables: `average_bc_biomass_pregnancy` (dyad), `average_biomass_bc_infancy` (infant), `average_bc_biomass_childhood` (child).
 
 13. **Final cleaning**
     - `R/final_clean_dyad.R` (dyad cohort).
@@ -97,6 +94,7 @@ Each pipeline sources the scripts below in this exact order (see the `modified_d
       - `env_data_long_<cohort>.csv` (environmental exposures, long format)
       - `no2_summary_<cohort>.csv` (one row per subject)
       - `bc_summary_<cohort>.csv` (one row per subject)
+      - `bc_biomass_summary_<cohort>.csv` (one row per subject)
       - `deprivation_index_long_<cohort>.csv` (Britt's project deprivation indices, including RUCA / Urban–Rural for the infant cohort).
 
 Optional / currently commented-out steps in the main scripts:
