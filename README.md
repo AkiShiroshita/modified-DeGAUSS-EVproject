@@ -134,7 +134,7 @@ As of October 29, 2025, the latest version is podman-installer-windows-amd64.exe
 
 After installation, run the following commands to initialize and start Podman:
 ```         
-podman
+podman init
 ```
 
 Check the status and start the Podman machine:
@@ -154,6 +154,12 @@ podman run -it -d --name gs2 --entrypoint /bin/bash degauss/geocoder:3.0
 -   Avoid launching the same Podman container multiple times from multiple RStudio sessions, as it may lead to unintentional errors.
 
 -   Parallel processes require CPU cores and memory. If your system doesn't have enough resources, processes can fail. $\rightarrow$ Reduce the number of workers used by setting the multisession plan to use fewer workers.
+
+-  If you want to remove the exisiting VM, please run 
+
+```
+podman machine rm <VM name, e.g., podman-machine-default>.
+```
 
 ### Every session
 
