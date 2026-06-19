@@ -205,5 +205,5 @@ combined_data_britt <- combined_data %>%
   ) 
 
 # Save final deprivation index data (long format: one row per address period)
-combined_data_britt %>% write_csv("X:/Britt_preliminary_data/preliminary_analysis_data/deprivation_index_long_child.csv")
+combined_data_britt %>% write_csv("X:/data/Britt_preliminary_data/preliminary_analysis_data/deprivation_index_long_child.csv")
 combined_data_britt %>% write_csv("X:/data/modified_degauss/deprivation_index_long_child.csv")
