@@ -61,9 +61,9 @@ start_geocoder_container2()
 
 # Geocoding in parallel
 # Set number of CPU cores to use for parallel processing
-# Set up parallel processing plan (use multisession for local parallelism)
-# multisession creates multiple R sessions on the same machine
-future::plan(multisession, workers = 24, gc = TRUE)  # to use multiple cores explicitly
+# Set up parallel processing plan (use future::multisession for local parallelism)
+# future::multisession creates multiple R sessions on the same machine
+future::plan(future::multisession, workers = 24, gc = TRUE)  # to use multiple cores explicitly
 
 # Geocode all addresses in parallel with progress bar
 # Add row index to track original row order

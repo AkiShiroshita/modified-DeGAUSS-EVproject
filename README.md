@@ -134,7 +134,7 @@ As of October 29, 2025, the latest version is podman-installer-windows-amd64.exe
 
 After installation, run the following commands to initialize and start Podman:
 ```         
-podman init
+podman machine init
 ```
 
 Check the status and start the Podman machine:
