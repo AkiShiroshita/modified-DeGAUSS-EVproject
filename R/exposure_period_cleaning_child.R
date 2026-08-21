@@ -12,7 +12,7 @@
 # so it doesn't begin before the child's actual date of birth.
 
 # The end date of the very last address record is trimmed 
-# so it doesn't extend beyond the last day of their first year.
+# so it doesn't extend beyond the last day of the 4-year exposure window.
 
 # 4. Resolving Gaps and Overlaps
 # there might still be gaps or overlaps between consecutive records
@@ -134,7 +134,7 @@ d[, `:=`(
 #  mutate(diff = end_date - start_date + 1) %>% 
 #  group_by(recip) %>% 
 #  summarise(days = sum(diff)) %>% 
-#  filter(days != 365 &  days != 366) # the output should be 365 or 366.
+#  filter(days != 1461 & days != 1462) # the output should be 1461 (a 4-year window; 1462 only if it contains two leap days).
 ################################
 
 cols_to_remove <- c("BEG", "END", "exposure_start_date", "exposure_end_date", "row_number", "n_row")

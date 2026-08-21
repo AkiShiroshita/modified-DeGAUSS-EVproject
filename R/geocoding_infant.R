@@ -85,7 +85,7 @@ d <- merge(d[,!"geocodes"], geo, by = "row_index", all.x=TRUE)
 d <- d[, .SD[1], by = row_index]
 
 # Remove temporary columns
-d[, c("row_index", "geocodes") := NULL]
+d[, "row_index" := NULL]  # geocodes was already dropped by the merge above
 
 #stop_geocoder_container2()  # Uncomment to stop container after geocoding
 
@@ -106,7 +106,8 @@ d <- d[!is.na(lat) & !is.na(lon)]
 # Keep only high-precision geocodes (range or street level)
 d <- d[precision == "range" | precision == "street"]
 # Keep only geocodes with score >= 0.5 (higher score = better match)
-d <- d[score>=0.5]
+d[, score := as.numeric(score)]  # geocode2() returns character columns; a string compare would keep "1e-04"
+d <- d[score >= 0.5]
 
 # Record counts after quality filtering
 track$n[track$status == "After removing imprecise geocoding"] <- nrow(d)

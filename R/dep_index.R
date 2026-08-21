@@ -13,7 +13,9 @@ d <- readr::read_rds(paste0(temp_folder, '/', 'temp_geocoded_census_road_greensp
 
 tracts10 <- readr::read_rds('data/tracts_2010_sf_5072_TN.rds')
 
-d <- sf::st_join(d, tracts10) 
+# largest = TRUE keeps exactly one tract per location (matching census.R); without
+# it a point falling on a tract boundary is duplicated into several rows.
+d <- suppressWarnings( sf::st_join(d, tracts10, left = TRUE, largest = TRUE) )
 
 d <- data.table::as.data.table(d)
 

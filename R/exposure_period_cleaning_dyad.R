@@ -2,7 +2,7 @@
 # 1. Define the exposure period for each mother: 
 # creates an exposure_start_date (LMP) and an exposure_end_date (the child's date of birth)
 # 
-# 2. Filtering for the First Year of Life
+# 2. Filtering for the Pregnancy Period (LMP to date of birth)
 # keep only the address records from d that overlap with the exposure period
 
 # 3. Trimming the Timeline Edges
@@ -135,7 +135,7 @@ d[, `:=`(
 #  mutate(diff = end_date - start_date + 1) %>% 
 #  group_by(recip) %>% 
 #  summarise(days = sum(diff)) %>% 
-#  filter(days != 365 &  days != 366) # the output should be 365 or 366.
+#  filter(days < 150 | days > 330) # pregnancy length varies, so flag implausible spans instead of a fixed day count.
 ################################
 
 cols_to_remove <- c("BEG", "END", "exposure_start_date", "exposure_end_date", "row_number", "n_row")

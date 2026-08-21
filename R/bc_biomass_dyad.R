@@ -18,7 +18,18 @@ d[, `:=` (start_date = as.Date(parse_date_time(start_date, orders = c("y/m/d", "
 )]
 # Filter for exposure during pregnancy period
 # Update the period based on the duration of your exposure timeframe 
-d <- d[state == "TN" & start_date >= as.Date("2001-01-01") & end_date <= as.Date("2017-12-31")]
+# Restrict to the period covered by the exposure grids.
+# A child is kept only if the *whole* exposure window falls inside the covered
+# period, so the test has to be made per child: filtering record by record would
+# silently keep children whose window only partly overlaps the grids, and average
+# them over the covered fraction only.
+data_start <- as.Date("2001-01-01")
+data_end   <- as.Date("2017-12-31")
+
+d <- d[state == "TN"]
+d[, `:=` (window_start = min(start_date), window_end = max(end_date)), by = recip]
+d <- d[window_start >= data_start & window_end <= data_end]
+d[, c("window_start", "window_end") := NULL]
 
 # Remove records with missing coordinates
 d <- na.omit(d, cols = c("lat", "lon"))
@@ -59,7 +70,19 @@ d[, bc := furrr::future_pmap(list(start_date, end_date, idx),
 #future::plan(sequential)  # Switch back to sequential if needed
 
 # Calculate average BC exposure per child
-d_bc_summary <- d[, rbindlist(bc), by = recip][, .(average_bc_biomass_pregnancy = mean(value, na.rm = TRUE)), by = recip]
+d_bc_long <- d[, rbindlist(bc), by = recip]
+
+# Average the monthly grid values, and record how much of the exposure window
+# had no value so that partially covered children can be identified downstream.
+# n_months_expected / n_months_missing count calendar months; n_month_records is
+# larger when a child lived at more than one address within the same month.
+d_bc_summary <- d_bc_long[, .(
+  average_bc_biomass_pregnancy = mean(value, na.rm = TRUE),
+  n_months_expected = uniqueN(date),
+  n_months_missing  = uniqueN(date) - uniqueN(date[!is.na(value)]),
+  n_month_records   = .N
+), by = recip]
+d_bc_summary[, fraction_months_missing := round(n_months_missing / n_months_expected, 4)]
 
 # Save BC summary
 d_bc_summary |> readr::write_rds(paste0(temp_folder, '/', 'd_bc_biomass_summary.rds'), compress = 'gz')

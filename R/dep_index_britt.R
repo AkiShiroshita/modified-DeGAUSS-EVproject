@@ -103,26 +103,24 @@ d <- dci[d, on = 'zip'] # Join on ZIP code (change zip code name if needed)
 
 # Calculate relocation indicator
 # Identifies when a person moved to a different location (different coordinates)
-coords <- sf::st_coordinates(sf::st_transform(st_as_sf(d), 5072))
-d_location <- d
-d_location[, `:=` (lon = coords[,1], lat = coords[,2])]
+# The indicator is added in place with `:=` instead of being built as a separate
+# table and cbind()-ed back: `by = recip` reorders rows into group order, and at
+# this point d is still in the "nested by location" order, so a cbind() would
+# attach each relocation value to the wrong record. Rows also have to be in
+# chronological order within a person for shift() to compare the previous address.
+setDT(d)
+coords <- sf::st_coordinates(sf::st_transform(sf::st_as_sf(d), 5072))
+d[, `:=` (lon = coords[, 1], lat = coords[, 2])]
+setorder(d, recip, start_date, end_date)
 
 # Flag relocations: 1 if coordinates changed from previous record, 0 otherwise
 # relocation = 1 indicates the person moved to a new address
-d_location <- d_location[, .(
-  relocation = fifelse(lon != data.table::shift(lon) & lat != data.table::shift(lat), 1, 0, na = 0)
-), by = recip]
+d[, relocation := fifelse(lon != data.table::shift(lon) | lat != data.table::shift(lat), 1, 0, na = 0),
+  by = recip]
 
-# Remove geometry column (not needed for final output)
-d <- d %>% 
-  dplyr::select(-geometry)
-
-# Remove recip from location data before binding
-d_location <- d_location %>% 
-  dplyr::select(-recip)
-
-# Combine deprivation indices with relocation indicator
-d <- cbind(d, d_location)
+# Remove geometry and the working coordinate columns (PHI) before saving
+d <- d %>%
+  dplyr::select(-geometry, -lon, -lat)
 
 # Save data with all deprivation indices and relocation indicator
-d |> write_fst(paste0(temp_folder, '/', 'temp_geocoded_deprivation_britt.fst'), compress = "100")
+d |> write_fst(paste0(temp_folder, '/', 'temp_geocoded_deprivation_britt.fst'), compress = 100)

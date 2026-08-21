@@ -12,10 +12,12 @@
 # Returns the path to the podman executable if found and running
 # Throws an error if podman is not installed or the daemon is not running
 find_podman_cmd <- function() {
-  podman_cmd <- Sys.which('podman')
-  if (length(podman_cmd) == 0) stop(paste('\n','podman command not found. ','\n',
-                                          'Please install podman: ','\n',
-                                          'https://podman.io/docs/installation'))
+  podman_cmd <- unname(Sys.which('podman'))
+  # Sys.which() returns an empty string (not a zero-length vector) when the
+  # executable cannot be found, so the emptiness has to be tested explicitly.
+  if (!nzchar(podman_cmd)) stop(paste('\n','podman command not found. ','\n',
+                                      'Please install podman: ','\n',
+                                      'https://podman.io/docs/installation'))
   podman_check <- suppressWarnings(system2(podman_cmd,'ps',stderr=TRUE,stdout=TRUE))
   if(!is.null(attr(podman_check,'status'))) stop(paste0('Cannot connect to the podman daemon. ',
                                                         'Is the podman daemon running on this host?'))
@@ -162,7 +164,7 @@ gc_call2 <- function(address) {
   
   # Return empty template if geocoding failed
   if (length(out) == 0) {
-    out <- tibble(
+    out <- dplyr::tibble(
       street = NA, zip = NA, city = NA, state = NA,
       lat = NA, lon = NA, score = NA, precision = NA
     )
@@ -191,7 +193,8 @@ start_geocoder_container2 <- function() {
 
 # Template for geocoding output when geocoding fails
 # Ensures consistent column structure even when no results are returned
-out_template <- dplyr::tibble(
+# Kept as a data.table so that both branches of geocode2() return the same class
+out_template <- data.table::data.table(
   street = NA, zip = NA, city = NA, state = NA,
   lat = NA, lon = NA, score = NA, precision = NA,
   fips_county = NA, number = NA, prenum = NA
@@ -219,11 +222,13 @@ geocode2 <- function(addr_string) {
   if (length(out) > 0) {
     out <- jsonlite::fromJSON(out)
     # Merge with template to ensure all columns exist
-    out <- rbindlist(list(out_template, out), fill = TRUE)[2, ]
+    out <- data.table::rbindlist(list(out_template, out), fill = TRUE)[2, ]
   } else {
-    out <- out_template
+    # copy() is required: out_template is a shared global data.table and the
+    # `:=` below would otherwise modify it by reference for every later call
+    out <- data.table::copy(out_template)
   }
-  
+
   # Convert all columns to character for consistency
   out[, names(out) := lapply(.SD, as.character)]
   out
@@ -397,8 +402,10 @@ get_no2 <- function(start_date, end_date, idx){
   .no2_average <- furrr::future_map(.look_up_split,
                                     ~read_and_merge(.x),
                                     .progress = TRUE,
-                                    .options = furrr_options(seed = TRUE)) |> 
-    dplyr::bind_rows() 
+                                    .options = furrr_options(seed = TRUE)) |>
+    dplyr::bind_rows()
+
+  return(.no2_average)
 }
 
 # Get monthly NO2 estimates for a date range and grid cell
@@ -406,11 +413,17 @@ get_no2 <- function(start_date, end_date, idx){
 # Input: start_date, end_date (Date objects), idx (grid cell index)
 # Output: data.table with monthly NO2 values for the specified period
 get_no2_monthly <- function(start_date, end_date, idx){
-  
+
   # Create lookup table with all months in range and grid index
   # Each row represents one month at one grid cell
-  .look_up <- tidyr::expand_grid(date = seq.Date(as.Date(start_date), as.Date(end_date), by = "month"),
-                                 idx = idx) |> 
+  # The sequence is anchored on the first day of the month so that (a) every
+  # calendar month the exposure period touches is included (including a partial
+  # final month) and (b) the sequence cannot drift when start_date falls on a
+  # day that does not exist in the following month (e.g. Jan 31 -> Mar 03).
+  .look_up <- tidyr::expand_grid(date = seq.Date(lubridate::floor_date(as.Date(start_date), "month"),
+                                                 lubridate::floor_date(as.Date(end_date), "month"),
+                                                 by = "month"),
+                                 idx = idx) |>
     mutate(year = as.character(year(date)), 
            month = as.character(sprintf("%02d", as.numeric(month(date)))),
            date = as.integer(paste0(year, month)),  # Convert to YYYYMM integer format
@@ -424,8 +437,10 @@ get_no2_monthly <- function(start_date, end_date, idx){
   .no2_average <- furrr::future_map(.look_up_split,
                                     ~read_and_merge(.x),
                                     .progress = TRUE,
-                                    .options = furrr_options(seed = TRUE)) |> 
-    dplyr::bind_rows() 
+                                    .options = furrr_options(seed = TRUE)) |>
+    dplyr::bind_rows()
+
+  return(.no2_average)
 }
 
 # BC (Black Carbon) ----------------------------------------------------------------------
@@ -439,9 +454,14 @@ get_bc <- function(start_date, end_date, idx){
   
   # Create lookup table with all months in range and grid index
   # Each row represents one month at one grid cell
-  .look_up <- tidyr::expand_grid(date = seq.Date(as.Date(start_date), as.Date(end_date), by = "month"),
-                                 idx = idx) %>% 
-    mutate(year = as.character(year(date)), 
+  # The sequence is anchored on the first day of the month so that every calendar
+  # month the exposure period touches is included and the sequence cannot drift
+  # when start_date falls on a day that does not exist in the following month.
+  .look_up <- tidyr::expand_grid(date = seq.Date(lubridate::floor_date(as.Date(start_date), "month"),
+                                                 lubridate::floor_date(as.Date(end_date), "month"),
+                                                 by = "month"),
+                                 idx = idx) %>%
+    mutate(year = as.character(year(date)),
            month = as.character(sprintf("%02d", as.numeric(month(date)))),
            date = as.integer(paste0(year, month)),  # Convert to YYYYMM integer format
            #date = format(date, "%Y-%m"),
@@ -455,8 +475,10 @@ get_bc <- function(start_date, end_date, idx){
   .bc_average <- future_map(.look_up_split,
                             ~read_and_merge(.x),
                             .progress = TRUE,
-                            .options = furrr_options(seed = TRUE)) |> 
-    bind_rows() 
+                            .options = furrr_options(seed = TRUE)) |>
+    bind_rows()
+
+  return(.bc_average)
 }
 # Biomass-specific BC (Black Carbon) ----------------------------------------------------------------------
 # Functions for retrieving biomass-specific black carbon exposure estimates from pre-computed grids
@@ -469,9 +491,14 @@ get_bc_biomass <- function(start_date, end_date, idx){
   
   # Create lookup table with all months in range and grid index
   # Each row represents one month at one grid cell
-  .look_up <- tidyr::expand_grid(date = seq.Date(as.Date(start_date), as.Date(end_date), by = "month"),
-                                 idx = idx) %>% 
-    mutate(year = as.character(year(date)), 
+  # The sequence is anchored on the first day of the month so that every calendar
+  # month the exposure period touches is included and the sequence cannot drift
+  # when start_date falls on a day that does not exist in the following month.
+  .look_up <- tidyr::expand_grid(date = seq.Date(lubridate::floor_date(as.Date(start_date), "month"),
+                                                 lubridate::floor_date(as.Date(end_date), "month"),
+                                                 by = "month"),
+                                 idx = idx) %>%
+    mutate(year = as.character(year(date)),
            month = as.character(sprintf("%02d", as.numeric(month(date)))),
            date = as.integer(paste0(year, month)),  # Convert to YYYYMM integer format
            #date = format(date, "%Y-%m"),
@@ -485,6 +512,8 @@ get_bc_biomass <- function(start_date, end_date, idx){
   .bc_average <- future_map(.look_up_split,
                             ~read_and_merge(.x),
                             .progress = TRUE,
-                            .options = furrr_options(seed = TRUE)) |> 
-    bind_rows() 
+                            .options = furrr_options(seed = TRUE)) |>
+    bind_rows()
+
+  return(.bc_average)
 }

@@ -34,7 +34,8 @@ NCHSurb_rural_codes <- read_csv("NCHSurb-rural-codes.csv")
 # analyses to use the scheme that matches their study period.
 NCHSurb_rural_codes <- NCHSurb_rural_codes |>
   filter(ST_ABBREV == "TN") |>
-  dplyr::select(CTYFIPS, CODE1990, CODE2006, CODE2013, CODE2023)
+  dplyr::select(CTYFIPS, CODE1990, CODE2006, CODE2013, CODE2023) |> 
+  rename(county_fips2020 = CTYFIPS)
 
 # Export cleaned data as RDS ----
 

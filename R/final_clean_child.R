@@ -39,7 +39,7 @@ d_location[, `:=` (lon = coords[,1], lat = coords[,2])]
 
 # Flag relocations: 1 if coordinates changed from previous record, 0 otherwise
 d_location <- d_location[, .(
-  relocation = fifelse(lon != data.table::shift(lon) & lat != data.table::shift(lat), 1, 0, na = 0)
+  relocation = fifelse(lon != data.table::shift(lon) | lat != data.table::shift(lat), 1, 0, na = 0)
 ), by = recip]
 
 # Remove geometry and convert all columns to character

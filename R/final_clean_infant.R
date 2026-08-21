@@ -14,7 +14,7 @@
 
 # Define temporary folder and file paths for multiple batches
 temp_folder <-   "Z:/Data/Tan/temp"
-files <- paste0(temp_folder, "/temp_degauss_child", 1:6, "/temp_geocoded_census_road_greenspace_dep_road_density.rds")
+files <- paste0(temp_folder, "/temp_degauss_child", 1:6, "/temp_geocoded_census_road_greenspace_dep_aadt_road_density.rds")
 
 # Combine data from all batches
 # Read and unnest nested data from each batch file
@@ -39,7 +39,7 @@ d_location[, `:=` (lon = coords[,1], lat = coords[,2])]
 
 # Flag relocations: 1 if coordinates changed from previous record, 0 otherwise
 d_location <- d_location[, .(
-  relocation = fifelse(lon != data.table::shift(lon) & lat != data.table::shift(lat), 1, 0, na = 0)
+  relocation = fifelse(lon != data.table::shift(lon) | lat != data.table::shift(lat), 1, 0, na = 0)
 ), by = recip]
 
 # Remove geometry and convert all columns to character

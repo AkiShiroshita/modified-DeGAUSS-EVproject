@@ -43,7 +43,8 @@ d_nested$idx <- d_grid$idx[nearest_index]
 
 # Get NO2 estimates
 # Unnest data and group by grid cell index
-d_nested[, rbindlist(data), by = idx]
+# The result must be assigned back to d: the rows below rely on the idx column
+d <- d_nested[, rbindlist(data), by = idx]
 
 # Re-parse dates (needed after unnesting)
 d[, `:=` (start_date = as.Date(parse_date_time(start_date, orders = c("y/m/d", "ymd", "mdy"))),

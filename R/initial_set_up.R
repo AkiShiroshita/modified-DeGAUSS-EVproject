@@ -71,10 +71,12 @@ system2("podman", c("machine", "start"), stderr = FALSE, stdout = FALSE)
 # Find and validate Podman command
 # This function is also defined in custom_functions.R but included here for standalone use
 find_podman_cmd <- function() {
-  podman_cmd <- Sys.which('podman')
-  if (length(podman_cmd) == 0) stop(paste('\n','podman command not found. ','\n',
-                                          'Please install podman: ','\n',
-                                          'https://podman.io/docs/installation'))
+  podman_cmd <- unname(Sys.which('podman'))
+  # Sys.which() returns an empty string (not a zero-length vector) when the
+  # executable cannot be found, so the emptiness has to be tested explicitly.
+  if (!nzchar(podman_cmd)) stop(paste('\n','podman command not found. ','\n',
+                                      'Please install podman: ','\n',
+                                      'https://podman.io/docs/installation'))
   podman_check <- suppressWarnings(system2(podman_cmd,'ps',stderr=TRUE,stdout=TRUE))
   if(!is.null(attr(podman_check,'status'))) stop(paste0('Cannot connect to the podman daemon. ',
                                                         'Is the podman daemon running on this host?'))

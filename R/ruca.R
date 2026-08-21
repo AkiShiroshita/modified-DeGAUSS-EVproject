@@ -46,4 +46,4 @@ ruca <- as.data.table(ruca)
 d <- ruca[d, on = 'zip']
 
 # Save with RUCA appended for downstream exposure or analysis steps
-d |> write_fst(paste0(temp_folder, '/', 'temp_geocoded_deprivation_britt_ruca.fst'), compress = "100")
+d |> write_fst(paste0(temp_folder, '/', 'temp_geocoded_deprivation_britt_ruca.fst'), compress = 100)
