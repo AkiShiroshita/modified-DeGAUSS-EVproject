@@ -217,6 +217,97 @@ roads1400_projected <- sf::st_transform(roads1400, crs = 5072) # change from crs
 
 roads1400_projected |> write_rds("roads1400_projected.rds", compress = "gz")
 
+## other years ----
+# Year 2012 Road Data
+# 2012 data may be used for historical exposure assessment
+
+# S1100: Primary roads for 2012
+roads1100 <- tigris::primary_roads(year = "2012")
+roads1100_projected <- sf::st_transform(roads1100, crs = 5072)
+
+roads1100_projected |> write_rds('data/roads1100_projected_2012.rds', compress = 'gz')
+
+# S1200: Secondary roads for 2012
+roads1200 <- tigris::primary_secondary_roads(state = "TN", year = "2012")
+roads1200_projected <- sf::st_transform(roads1200, crs = 5072)
+
+roads1200_projected <- roads1200_projected %>% 
+  filter(MTFCC == 'S1200')
+
+roads1200_projected |> write_rds('data/roads1200_projected_2012.rds', compress = 'gz')
+
+# Year 2013 Road Data
+# 2013 data may be used for historical exposure assessment
+
+# S1100: Primary roads for 2013
+roads1100 <- tigris::primary_roads(year = "2013")
+roads1100_projected <- sf::st_transform(roads1100, crs = 5072)
+
+roads1100_projected |> write_rds('data/roads1100_projected_2013.rds', compress = 'gz')
+
+# S1200: Secondary roads for 2013
+roads1200 <- tigris::primary_secondary_roads(state = "TN", year = "2013")
+roads1200_projected <- sf::st_transform(roads1200, crs = 5072)
+
+roads1200_projected <- roads1200_projected %>% 
+  filter(MTFCC == 'S1200')
+
+roads1200_projected |> write_rds('data/roads1200_projected_2013.rds', compress = 'gz')
+
+# Year 2014 Road Data
+# 2014 data may be used for historical exposure assessment
+
+# S1100: Primary roads for 2014
+roads1100 <- tigris::primary_roads(year = "2014")
+roads1100_projected <- sf::st_transform(roads1100, crs = 5072)
+
+roads1100_projected |> write_rds('data/roads1100_projected_2014.rds', compress = 'gz')
+
+# S1200: Secondary roads for 2014
+roads1200 <- tigris::primary_secondary_roads(state = "TN", year = "2014")
+roads1200_projected <- sf::st_transform(roads1200, crs = 5072)
+
+roads1200_projected <- roads1200_projected %>% 
+  filter(MTFCC == 'S1200')
+
+roads1200_projected |> write_rds('data/roads1200_projected_2014.rds', compress = 'gz')
+
+# Year 2015 Road Data
+# 2015 data may be used for historical exposure assessment
+
+# S1100: Primary roads for 2015
+roads1100 <- tigris::primary_roads(year = "2015")
+roads1100_projected <- sf::st_transform(roads1100, crs = 5072)
+
+roads1100_projected |> write_rds('data/roads1100_projected_2015.rds', compress = 'gz')
+
+# S1200: Secondary roads for 2015
+roads1200 <- tigris::primary_secondary_roads(state = "TN", year = "2015")
+roads1200_projected <- sf::st_transform(roads1200, crs = 5072)
+
+roads1200_projected <- roads1200_projected %>% 
+  filter(MTFCC == 'S1200')
+
+roads1200_projected |> write_rds('data/roads1200_projected_2015.rds', compress = 'gz')
+
+# Year 2016 Road Data
+# 2016 data may be used for historical exposure assessment
+
+# S1100: Primary roads for 2016
+roads1100 <- tigris::primary_roads(year = "2016")
+roads1100_projected <- sf::st_transform(roads1100, crs = 5072)
+
+roads1100_projected |> write_rds('data/roads1100_projected_2016.rds', compress = 'gz')
+
+# S1200: Secondary roads for 2016
+roads1200 <- tigris::primary_secondary_roads(state = "TN", year = "2016")
+roads1200_projected <- sf::st_transform(roads1200, crs = 5072)
+
+roads1200_projected <- roads1200_projected %>% 
+  filter(MTFCC == 'S1200')
+
+roads1200_projected |> write_rds('data/roads1200_projected_2016.rds', compress = 'gz')
+
 # Traffic density ---------------------------------------------------------
 # Download and prepare AADT (Annual Average Daily Traffic) data
 # AADT measures the average number of vehicles per day on road segments

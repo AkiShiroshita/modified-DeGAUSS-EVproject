@@ -86,6 +86,47 @@ combined_data_selected |> readr::write_csv("X:/data/modified_degauss/env_data_lo
 #gc() # Trigger garbage collection to free up memory
 #if (rstudioapi::isAvailable()) rstudioapi::restartSession() # restart R studio to completely remove any cache
 
+# Final cleaning (birth-year specific road proximity) ---------------------------------------------------------
+# Combines the road distances from R/road_comp.R (road network matching each child's birth year)
+
+temp_folder <-   "Z:/Data/Tan/temp"
+files <- paste0(temp_folder, "/temp_degauss_child", 21:26, "/temp_geocoded_census_road_comp.rds")
+
+# Combine data from all batches
+# Every batch must be in EPSG:5072: rbindlist keeps the CRS attribute of the first file only
+combine_road_data <- rbindlist(
+  lapply(files, function(file) {
+    d_file <- read_rds(file)
+    if (!isTRUE(sf::st_crs(d_file)$epsg == 5072)) stop(file, " is not in EPSG:5072.")
+    d_file %>%
+      unnest(cols = data)  # Unnest nested address records
+  }),
+  use.names = TRUE,
+  fill = TRUE
+)
+
+# Confirm the combined coordinates are in EPSG:5072 (meters, not lon/lat degrees)
+coords <- sf::st_coordinates(st_as_sf(combine_road_data))
+if (!isTRUE(sf::st_crs(st_as_sf(combine_road_data))$epsg == 5072)) stop("Combined road data is not in EPSG:5072.")
+if (any(abs(coords[, 1]) <= 180 & abs(coords[, 2]) <= 90)) stop("Coordinates look like lon/lat degrees, not EPSG:5072.")
+
+setDT(combine_road_data)
+setorder(combine_road_data, recip, start_date, end_date)
+
+# Select final variables (geometry is dropped to remove PHI)
+columns_to_select <- c("recip", "start_date", "end_date", "road_year",
+                       "dist_to_1100_comp", "dist_to_1200_comp")
+
+combine_road_data_selected <- combine_road_data[, ..columns_to_select]
+
+# Save final road proximity data (long format: one row per address period)
+# Change the directory as needed
+combine_road_data_selected |> readr::write_csv("X:/data/modified_degauss/road_comp_long_child.csv")
+
+#rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv) # Remove all objects from the environment
+#gc() # Trigger garbage collection to free up memory
+#if (rstudioapi::isAvailable()) rstudioapi::restartSession() # restart R studio to completely remove any cache
+
 # Final cleaning (NO2) ---------------------------------------------------------
 # Combines NO2 exposure summaries from multiple batches
 

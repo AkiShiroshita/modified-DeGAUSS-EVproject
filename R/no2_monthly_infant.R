@@ -18,15 +18,21 @@ d <- fst::read_fst(paste0(temp_folder, '/', 'temp_geocoded_cleaned.fst'), as.dat
 d[, `:=` (start_date = as.Date(parse_date_time(start_date, orders = c("y/m/d", "ymd", "mdy"))),
           end_date = as.Date(parse_date_time(end_date, orders = c("y/m/d", "ymd", "mdy")))
 )]
-# Filter for exposure during infancy period
-# Update the period based on the duration of your exposure timeframe
-# Restrict to the period covered by the exposure grids.
-# A child is kept only if the *whole* exposure window falls inside the covered
-# period, so the test has to be made per child: filtering record by record would
-# silently keep children whose window only partly overlaps the grids, and average
-# them over the covered fraction only.
+# Keep only children whose whole exposure window is covered by the grids.
+# The exposure window is the first year of life (birth to the day before the first birthday).
+# exposure_period_cleaning_infant.R sets the first record's start_date to the
+# window's first day and the last record's end_date to its last day, so
+# min(start_date) and max(end_date) per child are the window's two ends.
+# data_start / data_end are the first and last days with NO2 grid data
+# (2000-01 to 2016-12). The test is made on the window's last day, not on the date of
+# birth, so data_end is the actual end of the data and must NOT be moved back
+# by the window length: a child born on 2016-01-01 has a window ending on
+# 2016-12-31 and is fully covered.
+# The test is made per child, not per record: filtering record by record
+# would keep children whose window only partly overlaps the grids and average
+# them over the covered months only.
 data_start <- as.Date("2000-01-01")
-data_end   <- as.Date("2015-12-31")
+data_end   <- as.Date("2016-12-31")
 
 d <- d[state == "TN"]
 d[, `:=` (window_start = min(start_date), window_end = max(end_date)), by = recip]
