@@ -35,7 +35,7 @@ records <- data.table::rbindlist(unname(d$data), idcol = 'loc_index')
 records[, birth_year := lubridate::year(TN_DOB)]
 
 # Drop records whose birth year has no matching road network
-# (birth years before min_birth_year, missing TN_DOB, or years not downloaded yet)
+# (birth years outside road_years, missing TN_DOB, or years not downloaded yet)
 n_before <- nrow(records)
 road_years <- 2011:2016
 dropped <- records[!birth_year %in% road_years, .N, by = birth_year][order(birth_year)]
