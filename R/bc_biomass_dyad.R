@@ -16,19 +16,29 @@ d <- read_fst(paste0(temp_folder, '/', 'temp_geocoded_cleaned.fst'), as.data.tab
 d[, `:=` (start_date = as.Date(parse_date_time(start_date, orders = c("y/m/d", "ymd", "mdy"))),
           end_date = as.Date(parse_date_time(end_date, orders = c("y/m/d", "ymd", "mdy")))
 )]
-# Filter for exposure during pregnancy period
-# Update the period based on the duration of your exposure timeframe 
-# Restrict to the period covered by the exposure grids.
-# A child is kept only if the *whole* exposure window falls inside the covered
-# period, so the test has to be made per child: filtering record by record would
-# silently keep children whose window only partly overlaps the grids, and average
-# them over the covered fraction only.
-data_start <- as.Date("2001-01-01")
-data_end   <- as.Date("2017-12-31")
+# Keep only children whose whole exposure window is covered by the grids,
+# and restrict the cohort to births from 2001 onward.
+# The exposure window is the pregnancy (LMP to the date of birth).
+# exposure_period_cleaning_dyad.R sets the first record's start_date to the LMP
+# and the last record's end_date to the date of birth, so min(start_date) is
+# the LMP and max(end_date) is the date of birth.
+# data_start / data_end are the first and last days with biomass-specific BC grid data
+# (2000-01 to 2017-12). The window ends on the date of birth, so data_end is the actual
+# end of the data and must NOT be moved back by the window length.
+# birth_start restricts the cohort to whole calendar years of birth (2001 onward):
+# testing the LMP against 2001-01-01 instead would drop children born in early
+# 2001 (LMP in 2000) and keep only those born later in the year. Children born
+# from 2001-01-01 have an LMP in 2000 or later, so their window is still covered.
+# The test is made per child, not per record: filtering record by record
+# would keep children whose window only partly overlaps the grids and average
+# them over the covered months only.
+data_start  <- as.Date("2000-01-01")
+data_end    <- as.Date("2017-12-31")
+birth_start <- as.Date("2001-01-01")
 
 d <- d[state == "TN"]
 d[, `:=` (window_start = min(start_date), window_end = max(end_date)), by = recip]
-d <- d[window_start >= data_start & window_end <= data_end]
+d <- d[window_start >= data_start & window_end <= data_end & window_end >= birth_start]
 d[, c("window_start", "window_end") := NULL]
 
 # Remove records with missing coordinates
